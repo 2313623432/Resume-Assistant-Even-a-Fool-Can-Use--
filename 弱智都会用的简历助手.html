@@ -1,0 +1,3491 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Pro Max - 动画增强版简历生成器</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --secondary: #8b5cf6;
+        --success: #10b981;
+        --bg: #f1f5f9;
+        --surface: #ffffff;
+        --text: #1e293b;
+        --text-secondary: #64748b;
+        --border: #e2e8f0;
+        --radius: 12px;
+      }
+
+      #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: var(--text);
+        height: 100vh;
+        overflow: hidden;
+        font-size: 14px;
+        animation: pageLoad 1s ease-out;
+      }
+
+      @keyframes pageLoad {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .app-container {
+        display: grid;
+        grid-template-columns: 380px 1fr 1fr;
+        height: 100vh;
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        animation: fadeIn 0.5s ease-out 0.3s both;
+        transition: all 0.3s ease;
+        overflow: hidden;
+      }
+
+      @media (max-width: 1200px) {
+        .app-container {
+          grid-template-columns: 360px 1fr;
+        }
+        .preview-area {
+          display: none;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .app-container {
+          grid-template-columns: 320px 1fr;
+        }
+        .sidebar-content {
+          padding: 20px;
+        }
+        .editor-content {
+          padding: 20px;
+        }
+        .templates-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .app-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr;
+          height: auto;
+          min-height: 100vh;
+        }
+        .sidebar {
+          max-height: 40vh;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+          overflow-y: auto;
+        }
+        .sidebar-content {
+          padding: 16px;
+        }
+        .editor-area {
+          min-height: 60vh;
+          overflow-y: auto;
+        }
+        .editor-content {
+          padding: 16px;
+        }
+        .templates-grid {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+        }
+        .template-card {
+          padding: 12px;
+          min-height: 80px;
+        }
+        .module-list {
+          gap: 8px;
+        }
+        .module-item {
+          padding: 12px;
+          min-height: 60px;
+        }
+        .export-actions {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .btn-export {
+          padding: 12px;
+          min-height: 48px;
+        }
+        .form-card {
+          padding: 16px;
+        }
+        .entry-card {
+          padding: 16px;
+        }
+        #particles-js {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+        }
+        .mouse-particle {
+          display: none;
+        }
+        .lang-switch {
+          padding: 6px 12px !important;
+          font-size: 0.7rem !important;
+        }
+        .lang-switch i {
+          font-size: 0.875rem !important;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        padding: 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2) 0%,
+          transparent 60%
+        );
+        animation: pulse 4s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.5;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.8;
+        }
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header-title-section {
+        flex: 1;
+      }
+
+      /* 优化后的语言切换按钮 - 更加明显 */
+      .lang-switch {
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        color: #667eea;
+        padding: 10px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow:
+          0 4px 15px rgba(0, 0, 0, 0.2),
+          0 0 20px rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+        white-space: nowrap;
+        margin-left: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .lang-switch:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow:
+          0 8px 25px rgba(0, 0, 0, 0.3),
+          0 0 30px rgba(255, 255, 255, 0.5);
+        background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+        border-color: #fff;
+      }
+
+      .lang-switch:active {
+        transform: translateY(-1px) scale(1.02);
+      }
+
+      .lang-switch i {
+        font-size: 1.1rem;
+        color: #764ba2;
+      }
+
+      .lang-switch .lang-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        font-weight: 800;
+      }
+
+      .sidebar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header p {
+        font-size: 0.875rem;
+        opacity: 0.9;
+      }
+
+      .sidebar-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .section {
+        margin-bottom: 24px;
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .templates-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .template-card {
+        aspect-ratio: 3/4;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--bg);
+      }
+
+      .template-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+
+      .template-card.active {
+        border-color: var(--primary);
+        box-shadow:
+          0 0 0 3px rgba(59, 130, 246, 0.3),
+          0 10px 30px rgba(59, 130, 246, 0.2);
+      }
+
+      .template-preview {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+
+      .template-modern {
+        background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+      }
+      .template-minimal {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+      }
+      .template-cyber {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #0f172a 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+      .template-cyber::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 255, 255, 0.03) 2px,
+          rgba(0, 255, 255, 0.03) 4px
+        );
+        animation: scan 8s linear infinite;
+      }
+      @keyframes scan {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(100%);
+        }
+      }
+
+      .template-paper {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.05);
+      }
+      .template-nature {
+        background: linear-gradient(
+          135deg,
+          #ecfdf5 0%,
+          #d1fae5 50%,
+          #a7f3d0 100%
+        );
+      }
+      .template-dark {
+        background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+      }
+
+      .template-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 6px;
+        text-align: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        border-top: 1px solid var(--border);
+      }
+
+      .module-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .module-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        cursor: move;
+        transition: all 0.3s;
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+
+      .module-item:hover {
+        border-color: var(--primary);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+      }
+
+      .module-item.active {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+      }
+
+      .module-item.dragging {
+        opacity: 0.5;
+        transform: scale(0.95);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .module-item.drag-over {
+        border-top: 3px solid var(--primary);
+        transform: translateY(2px);
+      }
+
+      .drag-handle {
+        color: var(--text-secondary);
+        cursor: grab;
+        padding: 4px;
+      }
+
+      .drag-handle:active {
+        cursor: grabbing;
+      }
+
+      .module-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--bg);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 1rem;
+        flex-shrink: 0;
+      }
+
+      .module-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .module-title {
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+
+      .module-meta {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      .btn-icon {
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.2s;
+      }
+
+      .module-item:hover .btn-icon {
+        opacity: 1;
+      }
+
+      .btn-icon:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: #ef4444;
+      }
+
+      .btn-add {
+        width: 100%;
+        padding: 12px;
+        border: 2px dashed var(--border);
+        background: transparent;
+        color: var(--text-secondary);
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.3s;
+        margin-top: 8px;
+      }
+
+      .btn-add:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: rgba(59, 130, 246, 0.05);
+        transform: translateY(-2px);
+      }
+
+      .export-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .btn-export {
+        padding: 12px;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-export::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.6s,
+          height 0.6s;
+      }
+
+      .btn-export:hover::before {
+        width: 300px;
+        height: 300px;
+      }
+
+      .btn-export i {
+        font-size: 1.25rem;
+        position: relative;
+        z-index: 1;
+      }
+      .btn-export span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .btn-pdf {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #dc2626;
+      }
+      .btn-html {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #2563eb;
+      }
+      .btn-deploy {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        grid-column: 1 / -1;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-deploy:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      }
+
+      .btn-export:active,
+      .btn-add:active,
+      .template-card:active,
+      .module-item:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
+
+      .editor-area {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .editor-header {
+        padding: 20px 24px;
+        background: rgba(255, 255, 255, 0.8);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+      }
+
+      .editor-content {
+        flex: 1;
+        padding: 24px;
+      }
+
+      .form-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .form-title {
+        font-weight: 700;
+        font-size: 1.125rem;
+        color: var(--text);
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.9375rem;
+        transition: all 0.3s;
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .image-upload-area {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        background: #f8fafc;
+      }
+
+      .image-upload-area:hover {
+        border-color: var(--primary);
+        background: rgba(59, 130, 246, 0.02);
+        transform: scale(1.02);
+      }
+
+      .image-upload-area.has-image {
+        border-style: solid;
+        border-color: var(--primary);
+        padding: 0;
+        height: 200px;
+      }
+
+      .image-upload-area img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .upload-placeholder {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .upload-placeholder i {
+        font-size: 2.5rem;
+        margin-bottom: 8px;
+        display: block;
+        color: #cbd5e1;
+      }
+
+      .image-actions {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 6px;
+      }
+
+      .image-actions button {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: #ef4444;
+        transition: all 0.2s;
+      }
+
+      .image-actions button:hover {
+        transform: scale(1.1);
+      }
+
+      .entry-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 16px;
+        position: relative;
+        transition: all 0.3s;
+        border-left: 4px solid var(--primary);
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .entry-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .entry-actions {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        display: flex;
+        gap: 4px;
+      }
+
+      .preview-area {
+        background: #0f172a;
+        overflow-y: auto;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        position: relative;
+        animation: slideInRight 0.6s ease-out 0.6s both;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .preview-area::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(99, 102, 241, 0.1) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
+
+      .resume-page {
+        background: white;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 0;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        transform-origin: top;
+        position: relative;
+        animation: previewPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes previewPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+      }
+
+      @keyframes pageAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.9) translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      .zoom-controls {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        gap: 8px;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .zoom-btn {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .zoom-btn:hover {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--text-secondary);
+        animation: emptyStateBounce 2s ease-in-out infinite;
+      }
+
+      @keyframes emptyStateBounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-10px);
+        }
+        60% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        opacity: 0.3;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(4px);
+      }
+
+      .modal.active {
+        display: flex;
+        animation: fadeIn 0.3s;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 480px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-body {
+        padding: 24px;
+      }
+
+      .copyright-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(15, 23, 42, 0.9);
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        padding: 8px;
+        font-size: 0.75rem;
+        z-index: 50;
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .switch-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+
+      .switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        background: #cbd5e1;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background 0.3s;
+        flex-shrink: 0;
+      }
+
+      .switch.active {
+        background: var(--primary);
+      }
+
+      .switch::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .switch.active::after {
+        transform: translateX(20px);
+      }
+
+      /* GitHub Star Modal Styles */
+      .github-star-section {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 2px solid #0ea5e9;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .github-star-section h3 {
+        color: #0369a1;
+        margin-bottom: 12px;
+        font-size: 1.1rem;
+      }
+
+      .github-star-section p {
+        color: #64748b;
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+
+      .github-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #24292f;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        margin-bottom: 12px;
+      }
+
+      .github-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .github-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .github-action-btn {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .github-action-btn.primary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+      }
+
+      .github-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .github-action-btn.secondary {
+        background: transparent;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .github-action-btn.secondary:hover {
+        color: #ef4444;
+        background: #fef2f2;
+        border-color: #fecaca;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        transition: background 0.3s;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+      }
+
+      /* Custom Module Modal */
+      .module-type-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .module-type-card {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s;
+      }
+
+      .module-type-card:hover {
+        border-color: var(--primary);
+        background: #eff6ff;
+        transform: translateY(-2px);
+      }
+
+      .module-type-card.selected {
+        border-color: var(--primary);
+        background: #eff6ff;
+      }
+
+      .module-type-card i {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        color: var(--primary);
+      }
+
+      .module-type-card div {
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .module-type-card small {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="particles-js"></div>
+    <div class="app-container">
+      <aside class="sidebar">
+        <div class="header">
+          <div class="header-content">
+            <div class="header-title-section">
+              <h1>
+                <i class="fas fa-layer-group"></i>
+                <span data-i18n="appName">Resume Pro Max</span>
+              </h1>
+              <p data-i18n="appDesc">拖拽排序 · 炫酷动画 · 模版丰富</p>
+            </div>
+            <button class="lang-switch" onclick="app.toggleLanguage()">
+              <span class="lang-icon" id="langIcon">中</span>
+              <span id="langText">English</span>
+            </button>
+          </div>
+        </div>
+        <div class="sidebar-content">
+          <div class="section">
+            <div class="section-title" data-i18n="selectTemplate">
+              选择模版样式
+            </div>
+            <div class="templates-grid">
+              <div
+                class="template-card template-modern active"
+                onclick="app.selectTemplate('modern')"
+                data-template="modern"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i
+                    class="fas fa-bolt"
+                    style="
+                      color: #667eea;
+                      filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+                    "
+                  ></i>
+                </div>
+                <div class="template-label" data-i18n="templateModern">
+                  现代渐变
+                </div>
+              </div>
+              <div
+                class="template-card template-minimal"
+                onclick="app.selectTemplate('minimal')"
+                data-template="minimal"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-feather" style="color: #64748b"></i>
+                </div>
+                <div class="template-label" data-i18n="templateMinimal">
+                  极简黑白
+                </div>
+              </div>
+              <div
+                class="template-card template-cyber"
+                onclick="app.selectTemplate('cyber')"
+                data-template="cyber"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i
+                    class="fas fa-robot"
+                    style="
+                      color: #00ffff;
+                      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+                    "
+                  ></i>
+                </div>
+                <div
+                  class="template-label"
+                  style="background: rgba(15, 23, 42, 0.9); color: #00ffff"
+                  data-i18n="templateCyber"
+                >
+                  赛博朋克
+                </div>
+              </div>
+              <div
+                class="template-card template-paper"
+                onclick="app.selectTemplate('paper')"
+                data-template="paper"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-scroll" style="color: #d97706"></i>
+                </div>
+                <div
+                  class="template-label"
+                  style="background: rgba(254, 243, 199, 0.95); color: #92400e"
+                  data-i18n="templatePaper"
+                >
+                  纸艺质感
+                </div>
+              </div>
+              <div
+                class="template-card template-nature"
+                onclick="app.selectTemplate('nature')"
+                data-template="nature"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-leaf" style="color: #10b981"></i>
+                </div>
+                <div
+                  class="template-label"
+                  style="background: rgba(236, 253, 245, 0.95); color: #047857"
+                  data-i18n="templateNature"
+                >
+                  清新自然
+                </div>
+              </div>
+              <div
+                class="template-card template-dark"
+                onclick="app.selectTemplate('dark')"
+                data-template="dark"
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <i class="fas fa-moon" style="color: #a1a1aa"></i>
+                </div>
+                <div
+                  class="template-label"
+                  style="background: rgba(24, 24, 27, 0.95); color: #d4d4d8"
+                  data-i18n="templateDark"
+                >
+                  深色科技
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <span
+                ><i class="fas fa-grip-lines" style="margin-right: 6px"></i
+                ><span data-i18n="dragModules">拖拽排序模块</span></span
+              >
+              <span
+                style="font-size: 0.75rem; color: var(--text-secondary)"
+                id="moduleCount"
+                >5个模块</span
+              >
+            </div>
+            <div class="module-list" id="moduleList"></div>
+            <button class="btn-add" onclick="app.openAddModuleModal()">
+              <i class="fas fa-plus"></i>
+              <span data-i18n="addCustomModule">添加自定义模块</span>
+            </button>
+          </div>
+
+          <div class="section">
+            <div class="section-title" data-i18n="exportDeploy">导出与部署</div>
+            <div class="export-actions">
+              <button
+                class="btn-export btn-pdf"
+                onclick="app.requestExport('pdf')"
+              >
+                <i class="fas fa-file-pdf"></i>
+                <span>PDF</span>
+              </button>
+              <button
+                class="btn-export btn-html"
+                onclick="app.requestExport('html')"
+              >
+                <i class="fas fa-file-code"></i>
+                <span>HTML</span>
+              </button>
+              <button
+                class="btn-export btn-deploy"
+                onclick="app.openDeployModal()"
+              >
+                <i class="fas fa-rocket"></i>
+                <span data-i18n="deployWeb">部署到互联网</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="editor-area">
+        <div class="editor-header">
+          <h2 id="editorTitle">
+            <i class="fas fa-pen-to-square"></i>
+            <span data-i18n="editContent">编辑内容</span>
+          </h2>
+          <span
+            style="font-size: 0.875rem; color: var(--text-secondary)"
+            data-i18n="autoSave"
+            >自动保存</span
+          >
+        </div>
+        <div class="editor-content" id="editorContent">
+          <div class="empty-state">
+            <i class="fas fa-mouse-pointer"></i>
+            <h3 data-i18n="selectModuleEdit">选择左侧模块开始编辑</h3>
+            <p data-i18n="clickOrDragTip">点击"基本信息"或拖拽调整模块顺序</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-area">
+        <div class="resume-page" id="resumePreview"></div>
+        <div class="zoom-controls">
+          <button class="zoom-btn" onclick="app.zoomOut()">
+            <i class="fas fa-minus"></i>
+          </button>
+          <span
+            id="zoomLevel"
+            style="
+              line-height: 36px;
+              font-weight: 600;
+              min-width: 50px;
+              text-align: center;
+            "
+            >90%</span
+          >
+          <button class="zoom-btn" onclick="app.zoomIn()">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright-footer">
+      <span data-i18n="copyright"
+        >本网页最终解释权由陈佳赫所有 联系我：cjhyqf233@qq.com | Generated by
+        Resume Pro Max</span
+      >
+    </div>
+
+    <!-- Deploy Modal -->
+    <div
+      class="modal"
+      id="deployModal"
+      onclick="if (event.target === this) app.closeDeployModal();"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-rocket" style="color: var(--success)"></i>
+            <span data-i18n="deployYourResume">部署你的简历</span>
+          </h3>
+          <button
+            onclick="app.closeDeployModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+              color: var(--text-secondary);
+            "
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="github-star-section">
+            <h3>
+              <i class="fab fa-github"></i>
+              <span data-i18n="supportAuthor">支持作者</span>
+            </h3>
+            <p data-i18n="starRequestText">
+              如果您觉得这个项目对您有帮助，请给我们的 GitHub 仓库点个
+              Star，这将是我们持续改进的动力！
+            </p>
+            <a
+              href="https://github.com/2313623432/-.git"
+              target="_blank"
+              class="github-btn"
+              onclick="
+                window.open('https://github.com/2313623432/-.git', '_blank')
+              "
+            >
+              <i class="fab fa-github"></i>
+              <span data-i18n="gotoGithub">前往 GitHub 点 Star</span>
+            </a>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              border: 2px solid var(--border);
+              border-radius: 12px;
+              cursor: pointer;
+              transition: all 0.3s;
+              margin-bottom: 12px;
+            "
+            onmouseover="
+              this.style.borderColor = 'var(--primary)';
+              this.style.transform = 'translateX(5px)';
+              this.style.background = '#eff6ff';
+            "
+            onmouseout="
+              this.style.borderColor = 'var(--border)';
+              this.style.transform = 'translateX(0)';
+              this.style.background = 'white';
+            "
+            onclick="app.downloadZip()"
+          >
+            <div style="display: flex; align-items: center; gap: 16px">
+              <i
+                class="fas fa-file-archive"
+                style="font-size: 1.5rem; color: var(--primary)"
+              ></i>
+              <div>
+                <div
+                  style="font-weight: 600; margin-bottom: 4px"
+                  data-i18n="downloadZip"
+                >
+                  下载 ZIP 包
+                </div>
+                <div
+                  style="font-size: 0.875rem; color: var(--text-secondary)"
+                  data-i18n="includeAnimations"
+                >
+                  包含完整动画与交互
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="
+              padding: 16px;
+              border: 2px solid var(--border);
+              border-radius: 12px;
+              cursor: pointer;
+              transition: all 0.3s;
+            "
+            onmouseover="
+              this.style.borderColor = 'var(--primary)';
+              this.style.transform = 'translateX(5px)';
+              this.style.background = '#eff6ff';
+            "
+            onmouseout="
+              this.style.borderColor = 'var(--border)';
+              this.style.transform = 'translateX(0)';
+              this.style.background = 'white';
+            "
+            onclick="app.copyHTML()"
+          >
+            <div style="display: flex; align-items: center; gap: 16px">
+              <i
+                class="fas fa-code"
+                style="font-size: 1.5rem; color: var(--primary)"
+              ></i>
+              <div>
+                <div
+                  style="font-weight: 600; margin-bottom: 4px"
+                  data-i18n="copyHTML"
+                >
+                  复制 HTML 代码
+                </div>
+                <div
+                  style="font-size: 0.875rem; color: var(--text-secondary)"
+                  data-i18n="pasteToDeploy"
+                >
+                  粘贴到 GitHub Pages 或 Vercel
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GitHub Star Request Modal -->
+    <div
+      class="modal"
+      id="githubStarModal"
+      onclick="if (event.target === this) app.closeGithubStarModal();"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-star" style="color: #fbbf24"></i>
+            <span data-i18n="supportAuthorTitle">支持我们的开源项目</span>
+          </h3>
+          <button
+            onclick="app.closeGithubStarModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+              color: var(--text-secondary);
+            "
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="github-star-section" style="margin-bottom: 0">
+            <i
+              class="fab fa-github"
+              style="font-size: 3rem; color: #24292f; margin-bottom: 16px"
+            ></i>
+            <h3 data-i18n="starProjectTitle">给项目点个 Star</h3>
+            <p data-i18n="starProjectDesc">
+              您的支持是我们持续维护和更新项目的最大动力！
+            </p>
+            <a
+              href="https://github.com/2313623432/-.git"
+              target="_blank"
+              class="github-btn"
+              style="margin-top: 8px"
+            >
+              <i class="fas fa-star"></i>
+              <span data-i18n="starOnGithub">在 GitHub 上 Star</span>
+            </a>
+            <div style="margin-top: 12px; font-size: 0.75rem; color: #64748b">
+              <i class="fas fa-code-branch"></i>
+              <span data-i18n="repoUrl"
+                >仓库地址：https://github.com/2313623432/-.git</span
+              >
+            </div>
+          </div>
+          <div class="github-actions">
+            <button
+              class="github-action-btn primary"
+              onclick="app.confirmStarAndExport()"
+            >
+              <i class="fas fa-check"></i>
+              <span data-i18n="alreadyStarred">我已经 Star 支持作者</span>
+            </button>
+            <button
+              class="github-action-btn secondary"
+              onclick="app.skipStarAndExport()"
+            >
+              <i class="fas fa-times"></i>
+              <span data-i18n="dontWantStar">我不想 Star</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Custom Module Modal -->
+    <div
+      class="modal"
+      id="addModuleModal"
+      onclick="if (event.target === this) app.closeAddModuleModal();"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
+            <i class="fas fa-plus-circle" style="color: var(--primary)"></i>
+            <span data-i18n="addNewModule">添加新模块</span>
+          </h3>
+          <button
+            onclick="app.closeAddModuleModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 1.5rem;
+              cursor: pointer;
+              color: var(--text-secondary);
+            "
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label data-i18n="moduleName">模块名称</label>
+            <input
+              type="text"
+              id="newModuleName"
+              placeholder="例如：志愿者经历"
+              data-i18n-placeholder="moduleNamePlaceholder"
+            />
+          </div>
+          <div class="form-group">
+            <label data-i18n="moduleType">模块类型</label>
+            <div class="module-type-grid">
+              <div
+                class="module-type-card"
+                onclick="app.selectModuleType('timeline')"
+                data-type="timeline"
+              >
+                <i class="fas fa-stream"></i>
+                <div data-i18n="typeTimeline">时间线</div>
+                <small data-i18n="typeTimelineDesc">适合经历、教育</small>
+              </div>
+              <div
+                class="module-type-card"
+                onclick="app.selectModuleType('projects')"
+                data-type="projects"
+              >
+                <i class="fas fa-rocket"></i>
+                <div data-i18n="typeProjects">项目展示</div>
+                <small data-i18n="typeProjectsDesc">适合项目、作品</small>
+              </div>
+              <div
+                class="module-type-card"
+                onclick="app.selectModuleType('tags')"
+                data-type="tags"
+              >
+                <i class="fas fa-tags"></i>
+                <div data-i18n="typeTags">标签云</div>
+                <small data-i18n="typeTagsDesc">适合技能、兴趣</small>
+              </div>
+              <div
+                class="module-type-card"
+                onclick="app.selectModuleType('text')"
+                data-type="text"
+              >
+                <i class="fas fa-paragraph"></i>
+                <div data-i18n="typeText">文本段落</div>
+                <small data-i18n="typeTextDesc">适合简介、总结</small>
+              </div>
+            </div>
+          </div>
+          <button
+            class="btn-add"
+            onclick="app.confirmAddModule()"
+            style="
+              background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+              color: white;
+              border: none;
+              margin-top: 0;
+            "
+          >
+            <i class="fas fa-plus"></i>
+            <span data-i18n="confirmAdd">确认添加</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+      const i18n = {
+        zh: {
+          appName: "Resume Pro Max",
+          appDesc: "拖拽排序 · 炫酷动画 · 模版丰富",
+          selectTemplate: "选择模版样式",
+          templateModern: "现代渐变",
+          templateMinimal: "极简黑白",
+          templateCyber: "赛博朋克",
+          templatePaper: "纸艺质感",
+          templateNature: "清新自然",
+          templateDark: "深色科技",
+          dragModules: "拖拽排序模块",
+          addCustomModule: "添加自定义模块",
+          exportDeploy: "导出与部署",
+          deployWeb: "部署到互联网",
+          editContent: "编辑内容",
+          autoSave: "自动保存",
+          selectModuleEdit: "选择左侧模块开始编辑",
+          clickOrDragTip: '点击"基本信息"或拖拽调整模块顺序',
+          copyright:
+            "本网页最终解释权由陈佳赫所有 联系我：cjhyqf233@qq.com | Generated by Resume Pro Max",
+          deployYourResume: "部署你的简历",
+          supportAuthor: "支持作者",
+          starRequestText:
+            "如果您觉得这个项目对您有帮助，请给我们的 GitHub 仓库点个 Star，这将是我们持续改进的动力！",
+          gotoGithub: "前往 GitHub 点 Star",
+          downloadZip: "下载 ZIP 包",
+          includeAnimations: "包含完整动画与交互",
+          copyHTML: "复制 HTML 代码",
+          pasteToDeploy: "粘贴到 GitHub Pages 或 Vercel",
+          supportAuthorTitle: "支持我们的开源项目",
+          starProjectTitle: "给项目点个 Star",
+          starProjectDesc: "您的支持是我们持续维护和更新项目的最大动力！",
+          starOnGithub: "在 GitHub 上 Star",
+          repoUrl: "仓库地址：https://github.com/2313623432/-.git",
+          alreadyStarred: "我已经 Star 支持作者",
+          dontWantStar: "我不想 Star",
+          addNewModule: "添加新模块",
+          moduleName: "模块名称",
+          moduleNamePlaceholder: "例如：志愿者经历",
+          moduleType: "模块类型",
+          typeTimeline: "时间线",
+          typeTimelineDesc: "适合经历、教育",
+          typeProjects: "项目展示",
+          typeProjectsDesc: "适合项目、作品",
+          typeTags: "标签云",
+          typeTagsDesc: "适合技能、兴趣",
+          typeText: "文本段落",
+          typeTextDesc: "适合简介、总结",
+          confirmAdd: "确认添加",
+          personalInfo: "基本信息",
+          personalProfile: "个人资料",
+          avatar: "个人头像",
+          uploadAvatar: "点击上传头像",
+          supportFormats: "支持 JPG, PNG",
+          name: "姓名",
+          title: "职位头衔",
+          email: "电子邮箱",
+          phone: "联系电话",
+          location: "所在城市",
+          website: "个人网站",
+          summary: "个人简介",
+          companyOrg: "公司/组织",
+          position: "职位",
+          timePeriod: "时间期间",
+          timePlaceholder: "2021.06 - 至今",
+          description: "详细描述",
+          addExperience: "添加工作经历",
+          addEducation: "添加教育经历",
+          addAwards: "添加荣誉奖项",
+          schoolInstitution: "学校/机构",
+          majorDegree: "专业/学位",
+          deleteConfirm: "确定删除这条记录吗？",
+          projectSettings: "模块设置",
+          showProjectLinks: "显示项目链接",
+          showLinksDesc: "展示 Demo、GitHub 等链接按钮",
+          projectName: "项目名称",
+          role: "担任角色",
+          projectLinks: "项目链接",
+          demoUrl: "在线演示 URL",
+          githubRepo: "GitHub 仓库",
+          techStack: "技术栈（逗号分隔）",
+          projectDesc: "项目描述",
+          linkDemoLabel: "项目链接 点击跳转",
+          featuredProject: "标记为重点项目（突出显示）",
+          addNewProject: "添加新项目",
+          skillsPlaceholder: "每行一个，或逗号分隔",
+          preview: "实时预览",
+          customModule: "自定义模块",
+          systemModule: "系统模块 · 固定位置",
+          unknown: "未知",
+          itemCount: "条目",
+          pleaseEnterModuleName: "请输入模块名称",
+          pleaseSelectModuleType: "请选择模块类型",
+          deleteModuleConfirm: "确定删除此模块吗？数据将无法恢复。",
+          delete: "删除",
+          moveUp: "上移",
+          moveDown: "下移",
+          duplicate: "复制",
+          // 新增：默认模块名称
+          workExperience: "工作经历",
+          education: "教育背景",
+          projects: "项目经历",
+          skills: "技能特长",
+          awards: "荣誉奖项",
+        },
+        en: {
+          appName: "Resume Pro Max",
+          appDesc: "Drag & Drop · Cool Animations · Rich Templates",
+          selectTemplate: "Select Template",
+          templateModern: "Modern Gradient",
+          templateMinimal: "Minimalist",
+          templateCyber: "Cyberpunk",
+          templatePaper: "Paper Craft",
+          templateNature: "Fresh Nature",
+          templateDark: "Dark Tech",
+          dragModules: "Drag to Sort Modules",
+          addCustomModule: "Add Custom Module",
+          exportDeploy: "Export & Deploy",
+          deployWeb: "Deploy to Web",
+          editContent: "Edit Content",
+          autoSave: "Auto Save",
+          selectModuleEdit: "Select a module from the left to start editing",
+          clickOrDragTip: 'Click "Basic Info" or drag to adjust module order',
+          copyright:
+            "All rights reserved by Chen Jiahe | Contact: cjhyqf233@qq.com | Generated by Resume Pro Max",
+          deployYourResume: "Deploy Your Resume",
+          supportAuthor: "Support Author",
+          starRequestText:
+            "If you find this project helpful, please give us a Star on GitHub. It will be our motivation to keep improving!",
+          gotoGithub: "Go to GitHub to Star",
+          downloadZip: "Download ZIP Package",
+          includeAnimations: "Includes full animations and interactions",
+          copyHTML: "Copy HTML Code",
+          pasteToDeploy: "Paste to GitHub Pages or Vercel",
+          supportAuthorTitle: "Support Our Open Source Project",
+          starProjectTitle: "Star Our Project",
+          starProjectDesc:
+            "Your support is our biggest motivation for continuous maintenance and updates!",
+          starOnGithub: "Star on GitHub",
+          repoUrl: "Repository: https://github.com/2313623432/-.git",
+          alreadyStarred: "I've already Starred to support",
+          dontWantStar: "I don't want to Star",
+          addNewModule: "Add New Module",
+          moduleName: "Module Name",
+          moduleNamePlaceholder: "e.g.: Volunteer Experience",
+          moduleType: "Module Type",
+          typeTimeline: "Timeline",
+          typeTimelineDesc: "For experience, education",
+          typeProjects: "Projects",
+          typeProjectsDesc: "For projects, works",
+          typeTags: "Tag Cloud",
+          typeTagsDesc: "For skills, interests",
+          typeText: "Text Paragraph",
+          typeTextDesc: "For summary, introduction",
+          confirmAdd: "Confirm Add",
+          personalInfo: "Basic Info",
+          personalProfile: "Profile",
+          avatar: "Profile Photo",
+          uploadAvatar: "Click to upload photo",
+          supportFormats: "Supports JPG, PNG",
+          name: "Name",
+          title: "Job Title",
+          email: "Email",
+          phone: "Phone",
+          location: "Location",
+          website: "Website",
+          summary: "Professional Summary",
+          companyOrg: "Company/Organization",
+          position: "Position",
+          timePeriod: "Time Period",
+          timePlaceholder: "2021.06 - Present",
+          description: "Description",
+          addExperience: "Add Work Experience",
+          addEducation: "Add Education",
+          addAwards: "Add Awards",
+          schoolInstitution: "School/Institution",
+          majorDegree: "Major/Degree",
+          deleteConfirm: "Are you sure you want to delete this record?",
+          projectSettings: "Module Settings",
+          showProjectLinks: "Show Project Links",
+          showLinksDesc: "Display Demo, GitHub and other link buttons",
+          projectName: "Project Name",
+          role: "Role",
+          projectLinks: "Project Links",
+          demoUrl: "Live Demo URL",
+          githubRepo: "GitHub Repository",
+          techStack: "Tech Stack (comma separated)",
+          projectDesc: "Project Description",
+          linkDemoLabel: "Project Link — Click to Open",
+          featuredProject: "Mark as featured project (highlight)",
+          addNewProject: "Add New Project",
+          skillsPlaceholder: "One per line, or comma separated",
+          preview: "Live Preview",
+          customModule: "Custom Module",
+          systemModule: "System Module · Fixed Position",
+          unknown: "Unknown",
+          itemCount: "items",
+          pleaseEnterModuleName: "Please enter module name",
+          pleaseSelectModuleType: "Please select module type",
+          deleteModuleConfirm:
+            "Are you sure you want to delete this module? Data cannot be recovered.",
+          delete: "Delete",
+          moveUp: "Move Up",
+          moveDown: "Move Down",
+          duplicate: "Duplicate",
+          // 新增：默认模块名称
+          workExperience: "Work Experience",
+          education: "Education",
+          projects: "Projects",
+          skills: "Skills",
+          awards: "Awards & Honors",
+        },
+      };
+
+      const app = {
+        data: {
+          template: "modern",
+          language: "zh",
+          basics: {
+            name: "",
+            title: "",
+            email: "",
+            phone: "",
+            location: "",
+            website: "",
+            summary: "",
+            avatar: null,
+          },
+          modules: [],
+        },
+
+        currentModuleId: null,
+        zoom: 0.9,
+        dragSrcEl: null,
+        pendingExportType: null,
+        newModuleType: null,
+
+        init() {
+          this.load();
+          if (!this.data.basics.name) {
+            this.initDefaultData();
+          }
+          this.renderModuleList();
+          this.renderPreview();
+          this.updateZoom();
+          this.selectModule("basics");
+          this.initDragAndDrop();
+          this.updateLanguageUI();
+        },
+
+        initDefaultData() {
+          this.data.basics = {
+            name: this.t("appName"),
+            title:
+              this.data.language === "zh"
+                ? "高级前端工程师"
+                : "Senior Frontend Engineer",
+            email: "cjhyqf233@qq.com",
+            phone: "138-0000-0000",
+            location: this.data.language === "zh" ? "北京" : "Beijing",
+            website: "https://github.com/2313623432/-.git",
+            summary:
+              this.data.language === "zh"
+                ? "5年前端开发经验，专注于React生态与工程化建设。主导过多个大型中后台系统从0到1的架构设计，热爱技术创新与开源贡献。"
+                : "5 years of frontend development experience, focusing on React ecosystem and engineering. Led architecture design of multiple large-scale admin systems from scratch, passionate about technical innovation and open source.",
+            avatar: null,
+          };
+          this.initDefaultModules();
+        },
+
+        t(key) {
+          return i18n[this.data.language][key] || key;
+        },
+
+        toggleLanguage() {
+          const oldLang = this.data.language;
+          this.data.language = this.data.language === "zh" ? "en" : "zh";
+
+          // 更新默认模块的语言
+          this.updateDefaultModuleTitles(oldLang, this.data.language);
+
+          // 更新示例数据语言（如果是默认数据）
+          if (this.isDefaultData()) {
+            this.initDefaultData();
+          }
+
+          this.save();
+          this.updateLanguageUI();
+          this.renderModuleList();
+          if (this.currentModuleId) {
+            this.selectModule(this.currentModuleId);
+          }
+          this.renderPreview();
+        },
+
+        isDefaultData() {
+          // 检查是否是默认数据（简单判断）
+          return (
+            this.data.basics.email === "cjhyqf233@qq.com" ||
+            this.data.basics.name === "Resume Pro Max" ||
+            this.data.basics.name === i18n.zh.appName ||
+            this.data.basics.name === i18n.en.appName
+          );
+        },
+
+        updateDefaultModuleTitles(fromLang, toLang) {
+          // 默认模块ID到翻译键的映射
+          const moduleMap = {
+            experience: "workExperience",
+            education: "education",
+            projects: "projects",
+            skills: "skills",
+            awards: "awards",
+          };
+
+          // 反向映射（用于查找当前语言的标题对应的模块）
+          const reverseMap = {};
+          Object.keys(moduleMap).forEach((key) => {
+            reverseMap[i18n[fromLang][moduleMap[key]]] = key;
+          });
+
+          // 更新模块标题
+          this.data.modules.forEach((m) => {
+            if (moduleMap[m.id]) {
+              // 如果是默认模块，直接使用新语言的翻译
+              m.title = i18n[toLang][moduleMap[m.id]];
+            }
+          });
+        },
+
+        updateLanguageUI() {
+          // 更新语言切换按钮显示
+          const langIcon = document.getElementById("langIcon");
+          const langText = document.getElementById("langText");
+
+          if (this.data.language === "zh") {
+            langIcon.textContent = "中";
+            langText.textContent = "change to ENGLISH";
+          } else {
+            langIcon.textContent = "En";
+            langText.textContent = "切换为中文";
+          }
+
+          document.documentElement.lang =
+            this.data.language === "zh" ? "zh-CN" : "en";
+
+          document.querySelectorAll("[data-i18n]").forEach((el) => {
+            const key = el.getAttribute("data-i18n");
+            if (i18n[this.data.language][key]) {
+              el.textContent = this.t(key);
+            }
+          });
+
+          document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+            const key = el.getAttribute("data-i18n-placeholder");
+            if (i18n[this.data.language][key]) {
+              el.placeholder = this.t(key);
+            }
+          });
+        },
+
+        load() {
+          const saved = localStorage.getItem("resumeProMaxData");
+          if (saved) {
+            try {
+              const parsed = JSON.parse(saved);
+              this.data = { ...this.data, ...parsed };
+              if (!Array.isArray(this.data.modules)) {
+                this.initDefaultModules();
+              }
+            } catch (e) {
+              console.error("加载数据失败", e);
+              this.initDefaultModules();
+            }
+          } else {
+            this.initDefaultModules();
+          }
+        },
+
+        initDefaultModules() {
+          this.data.modules = [
+            {
+              id: "experience",
+              type: "timeline",
+              title: this.t("workExperience"),
+              icon: "fa-briefcase",
+              items: [
+                {
+                  id: 1,
+                  title:
+                    this.data.language === "zh"
+                      ? "科技创新有限公司"
+                      : "Tech Innovation Co., Ltd.",
+                  subtitle:
+                    this.data.language === "zh"
+                      ? "高级前端工程师"
+                      : "Senior Frontend Engineer",
+                  date:
+                    this.data.language === "zh"
+                      ? "2021.06 - 至今"
+                      : "2021.06 - Present",
+                  description:
+                    this.data.language === "zh"
+                      ? "负责公司核心产品前端架构设计，搭建组件库与工程化体系，团队效率提升40%。"
+                      : "Responsible for frontend architecture design of core products, built component library and engineering system, improved team efficiency by 40%.",
+                },
+              ],
+            },
+            {
+              id: "education",
+              type: "timeline",
+              title: this.t("education"),
+              icon: "fa-graduation-cap",
+              items: [
+                {
+                  id: 1,
+                  title:
+                    this.data.language === "zh"
+                      ? "北京大学"
+                      : "Peking University",
+                  subtitle:
+                    this.data.language === "zh"
+                      ? "计算机科学与技术 本科"
+                      : "B.S. in Computer Science",
+                  date:
+                    this.data.language === "zh"
+                      ? "2015.09 - 2019.06"
+                      : "2015.09 - 2019.06",
+                  description:
+                    this.data.language === "zh"
+                      ? "主修课程：数据结构、算法设计、软件工程、Web开发技术。"
+                      : "Major courses: Data Structures, Algorithm Design, Software Engineering, Web Development.",
+                },
+              ],
+            },
+            {
+              id: "projects",
+              type: "projects",
+              title: this.t("projects"),
+              icon: "fa-rocket",
+              config: { showLinks: true, allowDetailView: true },
+              items: [
+                {
+                  id: 1,
+                  title:
+                    this.data.language === "zh"
+                      ? "企业级低代码平台"
+                      : "Enterprise Low-Code Platform",
+                  role:
+                    this.data.language === "zh"
+                      ? "前端架构师"
+                      : "Frontend Architect",
+                  date: "2022.03 - 2023.12",
+                  description:
+                    this.data.language === "zh"
+                      ? "设计并实现可视化搭建系统，支持50+业务组件，服务200+开发者。"
+                      : "Designed and implemented visual building system, supporting 50+ business components, serving 200+ developers.",
+                  tech: ["React", "TypeScript", "Node.js", "WebSocket"],
+                  featured: true,
+                  links: {
+                    demo: "https://demo.example.com",
+                    github: "https://github.com/2313623432/-.git",
+                  },
+                },
+              ],
+            },
+            {
+              id: "skills",
+              type: "tags",
+              title: this.t("skills"),
+              icon: "fa-tools",
+              items: [
+                "React/Vue/Angular",
+                "TypeScript",
+                "Node.js",
+                "Webpack/Vite",
+                "Docker/K8s",
+                "GraphQL",
+              ],
+            },
+            {
+              id: "awards",
+              type: "timeline",
+              title: this.t("awards"),
+              icon: "fa-trophy",
+              items: [
+                {
+                  id: 1,
+                  title:
+                    this.data.language === "zh"
+                      ? "前端技术大会优秀 Speaker"
+                      : "Frontend Conf Excellent Speaker",
+                  subtitle:
+                    this.data.language === "zh"
+                      ? "年度最佳技术分享"
+                      : "Best Technical Sharing of the Year",
+                  date: "2023",
+                  description:
+                    this.data.language === "zh"
+                      ? "分享主题《微前端架构在大型项目中的实践》，获得广泛好评。"
+                      : "Topic: Micro-Frontend Architecture in Large Projects, widely praised.",
+                },
+              ],
+            },
+          ];
+        },
+
+        save() {
+          localStorage.setItem("resumeProMaxData", JSON.stringify(this.data));
+        },
+
+        initDragAndDrop() {
+          const list = document.getElementById("moduleList");
+          list.addEventListener("dragstart", this.handleDragStart.bind(this));
+          list.addEventListener("dragenter", this.handleDragEnter.bind(this));
+          list.addEventListener("dragover", this.handleDragOver.bind(this));
+          list.addEventListener("dragleave", this.handleDragLeave.bind(this));
+          list.addEventListener("drop", this.handleDrop.bind(this));
+          list.addEventListener("dragend", this.handleDragEnd.bind(this));
+        },
+
+        handleDragStart(e) {
+          this.dragSrcEl = e.target.closest(".module-item");
+          e.target.closest(".module-item").classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/html", this.dragSrcEl.innerHTML);
+        },
+
+        handleDragOver(e) {
+          if (e.preventDefault) e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          return false;
+        },
+
+        handleDragEnter(e) {
+          const item = e.target.closest(".module-item");
+          if (item && item !== this.dragSrcEl) {
+            item.classList.add("drag-over");
+          }
+        },
+
+        handleDragLeave(e) {
+          const item = e.target.closest(".module-item");
+          if (item) item.classList.remove("drag-over");
+        },
+
+        handleDrop(e) {
+          if (e.stopPropagation) e.stopPropagation();
+          const dropTarget = e.target.closest(".module-item");
+
+          if (this.dragSrcEl && dropTarget && this.dragSrcEl !== dropTarget) {
+            const srcIndex = parseInt(this.dragSrcEl.dataset.index);
+            const targetIndex = parseInt(dropTarget.dataset.index);
+
+            if (!isNaN(srcIndex) && !isNaN(targetIndex)) {
+              const [removed] = this.data.modules.splice(srcIndex - 1, 1);
+              this.data.modules.splice(targetIndex - 1, 0, removed);
+              this.save();
+              this.renderModuleList();
+              this.renderPreview();
+            }
+          }
+          return false;
+        },
+
+        handleDragEnd(e) {
+          document.querySelectorAll(".module-item").forEach((item) => {
+            item.classList.remove("dragging", "drag-over");
+          });
+        },
+
+        selectModule(id) {
+          this.currentModuleId = id;
+          this.renderModuleList();
+          const container = document.getElementById("editorContent");
+          const titleEl = document.getElementById("editorTitle");
+
+          if (id === "basics") {
+            titleEl.innerHTML = `<i class="fas fa-user"></i> ${this.t("personalInfo")}`;
+            this.renderBasicsEditor(container);
+            return;
+          }
+
+          const module = this.data.modules.find((m) => m.id === id);
+          if (!module) return;
+
+          titleEl.innerHTML = `<i class="fas fa-pen-to-square"></i> ${module.title}`;
+
+          if (module.type === "timeline")
+            this.renderTimelineEditor(container, module);
+          else if (module.type === "projects")
+            this.renderProjectsEditor(container, module);
+          else if (module.type === "tags")
+            this.renderTagsEditor(container, module);
+          else if (module.type === "text")
+            this.renderTextEditor(container, module);
+        },
+
+        renderModuleList() {
+          const container = document.getElementById("moduleList");
+          const basicsModule = {
+            id: "basics",
+            type: "basics",
+            title: this.t("personalInfo"),
+            icon: "fa-user",
+            isSystem: true,
+          };
+
+          const allModules = [basicsModule, ...this.data.modules];
+
+          container.innerHTML = allModules
+            .map(
+              (m, idx) => `
+                <div class="module-item ${this.currentModuleId === m.id ? "active" : ""}"
+                     onclick="app.selectModule('${m.id}')"
+                     data-id="${m.id}"
+                     data-index="${idx}"
+                     draggable="${!m.isSystem}"
+                     style="${m.isSystem ? "" : "cursor: move;"}">
+                    ${!m.isSystem ? `<div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>` : ""}
+                    <div class="module-icon">
+                        <i class="fas ${m.icon}"></i>
+                    </div>
+                    <div class="module-info">
+                        <div class="module-title">${m.title}</div>
+                        <div class="module-meta">
+                            ${m.isSystem ? this.t("systemModule") : `${idx} · ${m.items ? (Array.isArray(m.items) ? m.items.length : 1) : 0} ${this.t("itemCount")}`}
+                        </div>
+                    </div>
+                    ${
+                      !m.isSystem
+                        ? `
+                        <button class="btn-icon" onclick="event.stopPropagation(); app.deleteModule('${m.id}')" title="${this.t("delete")}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `
+                        : ""
+                    }
+                </div>
+            `,
+            )
+            .join("");
+
+          document.getElementById("moduleCount").textContent =
+            `${this.data.modules.length}${this.data.language === "zh" ? "个自定义模块" : " custom modules"}`;
+        },
+
+        openAddModuleModal() {
+          document.getElementById("addModuleModal").classList.add("active");
+          document.getElementById("newModuleName").value = "";
+          this.newModuleType = null;
+          document
+            .querySelectorAll(".module-type-card")
+            .forEach((card) => card.classList.remove("selected"));
+        },
+
+        closeAddModuleModal() {
+          document.getElementById("addModuleModal").classList.remove("active");
+        },
+
+        selectModuleType(type) {
+          this.newModuleType = type;
+          document.querySelectorAll(".module-type-card").forEach((card) => {
+            if (card.dataset.type === type) {
+              card.classList.add("selected");
+            } else {
+              card.classList.remove("selected");
+            }
+          });
+        },
+
+        confirmAddModule() {
+          const name = document.getElementById("newModuleName").value.trim();
+          if (!name) {
+            alert(this.t("pleaseEnterModuleName"));
+            return;
+          }
+          if (!this.newModuleType) {
+            alert(this.t("pleaseSelectModuleType"));
+            return;
+          }
+
+          const iconMap = {
+            timeline: "fa-stream",
+            projects: "fa-rocket",
+            tags: "fa-tags",
+            text: "fa-paragraph",
+          };
+
+          const newModule = {
+            id: "custom_" + Date.now(),
+            type: this.newModuleType,
+            title: name,
+            icon: iconMap[this.newModuleType],
+            items:
+              this.newModuleType === "text"
+                ? ""
+                : this.newModuleType === "tags"
+                  ? []
+                  : [],
+          };
+
+          this.data.modules.push(newModule);
+          this.save();
+          this.renderModuleList();
+          this.closeAddModuleModal();
+          this.selectModule(newModule.id);
+        },
+
+        deleteModule(id) {
+          if (!confirm(this.t("deleteModuleConfirm"))) return;
+          this.data.modules = this.data.modules.filter((m) => m.id !== id);
+          if (this.currentModuleId === id) this.selectModule("basics");
+          this.save();
+          this.renderModuleList();
+          this.renderPreview();
+        },
+
+        renderBasicsEditor(container) {
+          const b = this.data.basics;
+          container.innerHTML = `
+                <div class="form-card">
+                    <div class="form-header">
+                        <span class="form-title">${this.t("personalProfile")}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>${this.t("avatar")}</label>
+                        <div class="image-upload-area ${b.avatar ? "has-image" : ""}"
+                             onclick="document.getElementById('avatarInput').click()">
+                            ${
+                              b.avatar
+                                ? `
+                                <img src="${b.avatar}" alt="avatar">
+                                <div class="image-actions">
+                                    <button onclick="event.stopPropagation(); app.updateBasic('avatar', null)" title="${this.t("delete")}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `
+                                : `
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-camera"></i>
+                                    <div>${this.t("uploadAvatar")}</div>
+                                    <small style="color: #94a3b8;">${this.t("supportFormats")}</small>
+                                </div>
+                            `
+                            }
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;"
+                                   onchange="app.handleAvatarUpload(this)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>${this.t("name")} *</label>
+                            <input type="text" value="${b.name}" oninput="app.updateBasic('name', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>${this.t("title")} *</label>
+                            <input type="text" value="${b.title}" oninput="app.updateBasic('title', this.value)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>${this.t("email")} *</label>
+                            <input type="email" value="${b.email}" oninput="app.updateBasic('email', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>${this.t("phone")} *</label>
+                            <input type="tel" value="${b.phone}" oninput="app.updateBasic('phone', this.value)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>${this.t("location")}</label>
+                            <input type="text" value="${b.location}" oninput="app.updateBasic('location', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>${this.t("website")}</label>
+                            <input type="url" value="${b.website || ""}" oninput="app.updateBasic('website', this.value)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>${this.t("summary")} *</label>
+                        <textarea rows="5" oninput="app.updateBasic('summary', this.value)">${b.summary}</textarea>
+                    </div>
+                </div>
+            `;
+        },
+
+        renderTimelineEditor(container, module) {
+          if (!module.items) module.items = [];
+          const isEducation = module.id === "education";
+          const isAwards = module.id === "awards";
+          container.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    ${module.items
+                      .map(
+                        (item, idx) => `
+                        <div class="entry-card" style="animation-delay: ${idx * 0.1}s">
+                            <div class="entry-actions">
+                                ${idx > 0 ? `<button class="btn-icon" onclick="app.moveItem('${module.id}', ${item.id}, -1)" title="${this.t("moveUp")}"><i class="fas fa-arrow-up"></i></button>` : ""}
+                                ${idx < module.items.length - 1 ? `<button class="btn-icon" onclick="app.moveItem('${module.id}', ${item.id}, 1)" title="${this.t("moveDown")}"><i class="fas fa-arrow-down"></i></button>` : ""}
+                                <button class="btn-icon" onclick="app.deleteTimelineItem('${module.id}', ${item.id})" style="color: #ef4444;" title="${this.t("delete")}"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div style="padding-right: 100px;">
+                                <div class="form-row">
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label>${isEducation ? this.t("schoolInstitution") : isAwards ? this.t("awardTitle") : this.t("companyOrg")} *</label>
+                                        <input type="text" value="${item.title.replace(/"/g, "&quot;")}" oninput="app.updateTimelineItem('${module.id}', ${item.id}, 'title', this.value)">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 12px;">
+                                        <label>${isEducation ? this.t("majorDegree") : isAwards ? this.t("awardLevel") : this.t("position")} *</label>
+                                        <input type="text" value="${item.subtitle.replace(/"/g, "&quot;")}" oninput="app.updateTimelineItem('${module.id}', ${item.id}, 'subtitle', this.value)">
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 12px;">
+                                    <label>${this.t("timePeriod")} *</label>
+                                    <input type="text" value="${item.date.replace(/"/g, "&quot;")}" oninput="app.updateTimelineItem('${module.id}', ${item.id}, 'date', this.value)" placeholder="${this.t("timePlaceholder")}">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label>${this.t("description")}</label>
+                                    <textarea rows="3" oninput="app.updateTimelineItem('${module.id}', ${item.id}, 'description', this.value)">${item.description || ""}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+                <button class="btn-add" onclick="app.addTimelineItem('${module.id}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none;">
+                    <i class="fas fa-plus"></i> ${isEducation ? this.t("addEducation") : isAwards ? this.t("addAwards") : this.t("addExperience")}
+                </button>
+            `;
+        },
+
+        renderProjectsEditor(container, module) {
+          const cfg = module.config || {};
+          container.innerHTML = `
+                <div class="form-card" style="background: #f0f9ff; border-color: #bae6fd;">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: #0369a1;">
+                        <i class="fas fa-cog" style="margin-right: 8px;"></i>${this.t("projectSettings")}
+                    </div>
+                    <div class="switch-container" style="margin-bottom: 0;">
+                        <div class="switch ${cfg.showLinks ? "active" : ""}" onclick="app.toggleProjectConfig('${module.id}', 'showLinks')"></div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.875rem;">${this.t("showProjectLinks")}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">${this.t("showLinksDesc")}</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    ${module.items
+                      .map(
+                        (item, idx) => `
+                        <div class="form-card" style="border-left: 4px solid #8b5cf6; animation-delay: ${idx * 0.1}s">
+                            <div class="form-header" style="margin-bottom: 16px;">
+                                <span style="font-weight: 700; color: #7c3aed;"><i class="fas fa-rocket" style="margin-right: 8px;"></i>${this.t("typeProjects")} ${idx + 1}</span>
+                                <button class="btn-icon" onclick="app.deleteProjectItem('${module.id}', ${item.id})" style="color: #ef4444; opacity: 1;"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div class="form-group">
+                                <label>${this.t("projectName")} *</label>
+                                <input type="text" value="${item.title.replace(/"/g, "&quot;")}" oninput="app.updateProjectItem('${module.id}', ${item.id}, 'title', this.value)">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>${this.t("role")}</label>
+                                    <input type="text" value="${(item.role || "").replace(/"/g, "&quot;")}" oninput="app.updateProjectItem('${module.id}', ${item.id}, 'role', this.value)">
+                                </div>
+                                <div class="form-group">
+                                    <label>${this.t("timePeriod")}</label>
+                                    <input type="text" value="${(item.date || "").replace(/"/g, "&quot;")}" oninput="app.updateProjectItem('${module.id}', ${item.id}, 'date', this.value)">
+                                </div>
+                            </div>
+                            ${
+                              cfg.showLinks
+                                ? `
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.875rem;"><i class="fas fa-link" style="margin-right: 6px;"></i>${this.t("projectLinks")}</label>
+                                    <div class="form-row">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="url" value="${(item.links?.demo || "").replace(/"/g, "&quot;")}" oninput="app.updateProjectLink('${module.id}', ${item.id}, 'demo', this.value)" placeholder="${this.t("demoUrl")}">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="url" value="${(item.links?.github || "").replace(/"/g, "&quot;")}" oninput="app.updateProjectLink('${module.id}', ${item.id}, 'github', this.value)" placeholder="${this.t("githubRepo")}">
+                                        </div>
+                                    </div>
+                                </div>
+                            `
+                                : ""
+                            }
+                            <div class="form-group">
+                                <label>${this.t("techStack")}</label>
+                                <input type="text" value="${(item.tech ? item.tech.join(", ") : "").replace(/"/g, "&quot;")}" oninput="app.updateProjectTech('${module.id}', ${item.id}, this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label>${this.t("projectDesc")}</label>
+                                <textarea rows="4" oninput="app.updateProjectItem('${module.id}', ${item.id}, 'description', this.value)">${item.description || ""}</textarea>
+                            </div>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 12px;">
+                                <input type="checkbox" ${item.featured ? "checked" : ""} onchange="app.updateProjectItem('${module.id}', ${item.id}, 'featured', this.checked)">
+                                <span style="font-size: 0.875rem;">${this.t("featuredProject")}</span>
+                            </label>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+                <button class="btn-add" onclick="app.addProjectItem('${module.id}')" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none;">
+                    <i class="fas fa-plus"></i> ${this.t("addNewProject")}
+                </button>
+            `;
+        },
+
+        renderTagsEditor(container, module) {
+          container.innerHTML = `
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>${module.title}（${this.t("skillsPlaceholder")}）</label>
+                        <textarea rows="12" oninput="app.updateTags('${module.id}', this.value)"
+                            placeholder="JavaScript&#10;React&#10;Vue.js">${module.items.join("\n")}</textarea>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 8px;">${this.t("preview")}：</div>
+                        <div id="tags-preview" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${module.items
+                              .map(
+                                (tag, i) => `
+                                <span style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #2563eb; padding: 6px 16px; border-radius: 20px;
+                                             font-size: 0.875rem; font-weight: 600; border: 1px solid #bfdbfe; animation: popIn 0.3s ${i * 0.05}s both;">
+                                    ${tag}
+                                </span>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes popIn {
+                        from { opacity: 0; transform: scale(0.5); }
+                        to { opacity: 1; transform: scale(1); }
+                    }
+                </style>
+            `;
+        },
+
+        renderTextEditor(container, module) {
+          container.innerHTML = `
+                <div class="form-card">
+                    <div class="form-group">
+                        <label>${module.title}</label>
+                        <textarea rows="16" oninput="app.updateTextModule('${module.id}', this.value)"
+                            placeholder="${this.data.language === "zh" ? "请输入内容..." : "Enter content here..."}">${module.items || ""}</textarea>
+                    </div>
+                </div>
+            `;
+        },
+
+        updateTextModule(moduleId, value) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (module) {
+            module.items = value;
+            this.save();
+            this.renderPreview();
+          }
+        },
+
+        updateBasic(field, value) {
+          this.data.basics[field] = value;
+          this.save();
+          this.renderPreview();
+        },
+
+        handleAvatarUpload(input) {
+          const file = input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.data.basics.avatar = e.target.result;
+            this.save();
+            this.renderPreview();
+            this.selectModule("basics");
+          };
+          reader.readAsDataURL(file);
+        },
+
+        addTimelineItem(moduleId) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          module.items.push({
+            id: Date.now(),
+            title: "",
+            subtitle: "",
+            date: "",
+            description: "",
+          });
+          this.save();
+          this.selectModule(moduleId);
+        },
+
+        updateTimelineItem(moduleId, itemId, field, value) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          const item = module.items.find((i) => i.id === itemId);
+          if (item) {
+            item[field] = value;
+            this.save();
+            this.renderPreview();
+          }
+        },
+
+        deleteTimelineItem(moduleId, itemId) {
+          if (!confirm(this.t("deleteConfirm"))) return;
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          module.items = module.items.filter((i) => i.id !== itemId);
+          this.save();
+          this.selectModule(moduleId);
+          this.renderPreview();
+        },
+
+        moveItem(moduleId, itemId, direction) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          const idx = module.items.findIndex((i) => i.id === itemId);
+          if (idx === -1) return;
+          const newIdx = idx + direction;
+          if (newIdx < 0 || newIdx >= module.items.length) return;
+          [module.items[idx], module.items[newIdx]] = [
+            module.items[newIdx],
+            module.items[idx],
+          ];
+          this.save();
+          this.selectModule(moduleId);
+          this.renderPreview();
+        },
+
+        addProjectItem(moduleId) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          module.items.push({
+            id: Date.now(),
+            title: "",
+            role: "",
+            date: "",
+            description: "",
+            tech: [],
+            featured: false,
+            links: { demo: "", github: "" },
+          });
+          this.save();
+          this.selectModule(moduleId);
+        },
+
+        updateProjectItem(moduleId, itemId, field, value) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          const item = module.items.find((i) => i.id === itemId);
+          if (item) {
+            item[field] = value;
+            this.save();
+            this.renderPreview();
+          }
+        },
+
+        updateProjectLink(moduleId, itemId, linkType, value) {
+          this.updateProjectItem(moduleId, itemId, "links", {
+            ...(this.data.modules
+              .find((m) => m.id === moduleId)
+              .items.find((i) => i.id === itemId).links || {}),
+            [linkType]: value,
+          });
+        },
+
+        updateProjectTech(moduleId, itemId, value) {
+          const techs = value
+            .split(/[,，]/)
+            .map((t) => t.trim())
+            .filter((t) => t);
+          this.updateProjectItem(moduleId, itemId, "tech", techs);
+        },
+
+        deleteProjectItem(moduleId, itemId) {
+          if (!confirm(this.t("deleteConfirm"))) return;
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          module.items = module.items.filter((i) => i.id !== itemId);
+          this.save();
+          this.selectModule(moduleId);
+          this.renderPreview();
+        },
+
+        toggleProjectConfig(moduleId, configKey) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          if (!module.config) module.config = {};
+          module.config[configKey] = !module.config[configKey];
+          this.save();
+          this.selectModule(moduleId);
+        },
+
+        updateTags(moduleId, value) {
+          const module = this.data.modules.find((m) => m.id === moduleId);
+          if (!module) return;
+          const items = value
+            .split(/[\n,，]/)
+            .map((s) => s.trim())
+            .filter((s) => s);
+          module.items = items;
+          this.save();
+          this.renderPreview();
+          const preview = document.getElementById("tags-preview");
+          if (preview) {
+            preview.innerHTML = items
+              .map(
+                (tag, i) => `
+                    <span style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); color: #2563eb; padding: 6px 16px; border-radius: 20px;
+                                 font-size: 0.875rem; font-weight: 600; border: 1px solid #bfdbfe; animation: popIn 0.3s ${i * 0.05}s both;">
+                        ${tag}
+                    </span>
+                `,
+              )
+              .join("");
+          }
+        },
+
+        selectTemplate(template) {
+          this.data.template = template;
+          this.save();
+          document
+            .querySelectorAll(".template-card")
+            .forEach((card) => card.classList.remove("active"));
+          document
+            .querySelector(`.template-${template}`)
+            .classList.add("active");
+          this.renderPreview();
+        },
+
+        getTemplateStyles() {
+          const styles = {
+            modern: {
+              bg: "linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)",
+              header:
+                "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; text-align: center;",
+              name: "font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);",
+              sectionTitle:
+                "color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 8px; margin-bottom: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;",
+              card: "background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: all 0.3s;",
+            },
+            minimal: {
+              bg: "#ffffff",
+              header:
+                "border-bottom: 2px solid #1e293b; padding: 40px; text-align: left;",
+              name: "font-size: 2.5rem; font-weight: 300; letter-spacing: -0.05em; margin-bottom: 8px; color: #0f172a;",
+              sectionTitle:
+                "color: #0f172a; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.875rem; font-weight: 600; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; margin-bottom: 16px;",
+              card: "border-left: 2px solid #e2e8f0; padding-left: 20px; margin-bottom: 20px; transition: all 0.3s;",
+            },
+            cyber: {
+              bg: "#0f172a",
+              header:
+                "background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #00ffff; padding: 40px; text-align: center; border: 2px solid #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); position: relative; overflow: hidden;",
+              name: "font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; color: #00ffff; text-shadow: 0 0 10px rgba(0,255,255,0.8); font-family: monospace;",
+              sectionTitle:
+                "color: #00ffff; border-bottom: 1px solid #00ffff; padding-bottom: 8px; margin-bottom: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;",
+              card: "background: rgba(30, 41, 59, 0.8); border: 1px solid #00ffff; padding: 20px; margin-bottom: 16px; box-shadow: 0 0 10px rgba(0,255,255,0.1); transition: all 0.3s; color: #cbd5e1;",
+            },
+            paper: {
+              bg: "#fef3c7",
+              header:
+                "background: linear-gradient(to bottom, #fffbeb 0%, #fef3c7 100%); padding: 40px; text-align: center; border-bottom: 3px double #d97706; position: relative;",
+              name: "font-size: 2.5rem; font-weight: 700; color: #92400e; margin-bottom: 8px; font-family: Georgia, serif;",
+              sectionTitle:
+                "color: #92400e; border-bottom: 2px solid #f59e0b; padding-bottom: 8px; margin-bottom: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;",
+              card: "background: #fffbeb; border: 1px solid #fde68a; padding: 20px; margin-bottom: 16px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); transition: all 0.3s;",
+            },
+            nature: {
+              bg: "linear-gradient(to bottom, #ecfdf5 0%, #ffffff 100%)",
+              header:
+                "background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 40px; text-align: center; border-bottom: 4px solid #10b981;",
+              name: "font-size: 2.5rem; font-weight: 800; color: #065f46; margin-bottom: 8px;",
+              sectionTitle:
+                "color: #047857; border-bottom: 2px solid #34d399; padding-bottom: 8px; margin-bottom: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px;",
+              card: "background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #d1fae5; transition: all 0.3s;",
+            },
+            dark: {
+              bg: "#18181b",
+              header:
+                "background: #27272a; padding: 40px; text-align: center; border-bottom: 1px solid #3f3f46;",
+              name: "font-size: 2.5rem; font-weight: 700; color: #fafafa; margin-bottom: 8px;",
+              sectionTitle:
+                "color: #a1a1aa; border-bottom: 1px solid #3f3f46; padding-bottom: 8px; margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;",
+              card: "background: #27272a; border: 1px solid #3f3f46; padding: 20px; margin-bottom: 16px; transition: all 0.3s; color: #d4d4d8;",
+            },
+          };
+          return styles[this.data.template] || styles.modern;
+        },
+
+        renderPreview() {
+          const preview = document.getElementById("resumePreview");
+          const b = this.data.basics;
+          const style = this.getTemplateStyles();
+          const isDark =
+            this.data.template === "cyber" || this.data.template === "dark";
+          const textColor = isDark ? "#fff" : "#1e293b";
+          const secondaryColor = isDark ? "#cbd5e1" : "#475569";
+
+          let html = `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; background: ${style.bg}; min-height: 297mm; color: ${textColor};">`;
+
+          html += `<div style="${style.header}">`;
+          if (b.avatar) {
+            html += `<img src="${b.avatar}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 16px; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">`;
+          }
+          html += `<h1 style="${style.name}">${b.name}</h1>`;
+          html += `<div style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 12px;">${b.title}</div>`;
+          html += `<div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; font-size: 0.875rem; opacity: 0.8;">`;
+          html += `<span><i class="fas fa-envelope"></i> ${b.email}</span>`;
+          html += `<span><i class="fas fa-phone"></i> ${b.phone}</span>`;
+          html += `<span><i class="fas fa-map-marker-alt"></i> ${b.location}</span>`;
+          if (b.website)
+            html += `<span><i class="fas fa-globe"></i> ${b.website}</span>`;
+          html += `</div></div>`;
+
+          html += `<div style="padding: 40px;">`;
+
+          if (b.summary) {
+            html += `<div style="margin-bottom: 32px;">`;
+            html += `<h2 style="${style.sectionTitle}">${this.t("summary")}</h2>`;
+            html += `<p style="line-height: 1.8; color: ${secondaryColor};">${b.summary}</p>`;
+            html += `</div>`;
+          }
+
+          this.data.modules.forEach((m, idx) => {
+            if (!m.items || (Array.isArray(m.items) && m.items.length === 0))
+              return;
+            if (m.type === "text" && !m.items) return;
+
+            html += `<div style="margin-bottom: 32px;">`;
+            html += `<h2 style="${style.sectionTitle}"><i class="fas ${m.icon}"></i> ${m.title}</h2>`;
+
+            if (m.type === "timeline") {
+              m.items.forEach((item) => {
+                html += `<div style="${style.card}">`;
+                html += `<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; flex-wrap: wrap;">`;
+                html += `<h3 style="font-weight: 700; font-size: 1.1rem; margin: 0;">${item.title}</h3>`;
+                html += `<span style="font-size: 0.875rem; opacity: 0.7;">${item.date}</span>`;
+                html += `</div>`;
+                html += `<div style="font-weight: 600; opacity: 0.8; margin-bottom: 8px; ${this.data.template === "modern" ? "color: #667eea;" : this.data.template === "cyber" ? "color: #00ffff;" : ""}">${item.subtitle}</div>`;
+                if (item.description)
+                  html += `<p style="margin: 0; opacity: 0.8; line-height: 1.6;">${item.description}</p>`;
+                html += `</div>`;
+              });
+            } else if (m.type === "projects") {
+              html += `<div style="display: grid; gap: 16px;">`;
+              m.items.forEach((item) => {
+                html += `<div style="${style.card} ${item.featured ? "border: 2px solid " + (this.data.template === "cyber" ? "#00ffff" : "#8b5cf6") + ";" : ""}">`;
+                if (item.featured)
+                  html += `<div style="display: inline-block; background: ${this.data.template === "cyber" ? "#00ffff" : "#8b5cf6"}; color: ${this.data.template === "cyber" ? "#0f172a" : "white"}; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px;">Featured</div>`;
+                html += `<div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 8px;">`;
+                html += `<h3 style="font-weight: 700; font-size: 1.2rem; margin: 0;">${item.title}</h3>`;
+                if (
+                  m.config?.showLinks &&
+                  (item.links?.demo || item.links?.github)
+                ) {
+                  html += `<div style="display: flex; gap: 8px;">`;
+                  if (item.links.demo)
+                    html += `<a href="${item.links.demo}" target="_blank" style="background: ${this.data.template === "cyber" ? "transparent" : "#3b82f6"}; color: ${this.data.template === "cyber" ? "#00ffff" : "white"}; padding: 4px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none; border: ${this.data.template === "cyber" ? "1px solid #00ffff" : "none"};">${this.t("linkDemoLabel")}</a>`;
+                  if (item.links.github)
+                    html += `<a href="${item.links.github}" target="_blank" style="background: ${this.data.template === "cyber" ? "transparent" : "#1e293b"}; color: ${this.data.template === "cyber" ? "#00ffff" : "white"}; padding: 4px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none; border: ${this.data.template === "cyber" ? "1px solid #00ffff" : "none"};">GitHub</a>`;
+                  html += `</div>`;
+                }
+                html += `</div>`;
+                html += `<div style="opacity: 0.7; font-size: 0.875rem; margin: 4px 0 8px;">${item.role || ""} ${item.date ? "· " + item.date : ""}</div>`;
+                if (item.tech && item.tech.length) {
+                  html += `<div style="margin-bottom: 8px;">`;
+                  item.tech.forEach((t) => {
+                    html += `<span style="display: inline-block; background: ${this.data.template === "cyber" ? "rgba(0,255,255,0.1)" : this.data.template === "dark" ? "#3f3f46" : "#f3f4f6"}; color: ${this.data.template === "cyber" ? "#00ffff" : this.data.template === "dark" ? "#d4d4d8" : "#374151"}; padding: 2px 10px; border-radius: 4px; font-size: 0.875rem; margin-right: 6px; margin-bottom: 6px; border: ${this.data.template === "cyber" ? "1px solid rgba(0,255,255,0.3)" : "none"}">${t}</span>`;
+                  });
+                  html += `</div>`;
+                }
+                if (item.description)
+                  html += `<p style="margin: 0; opacity: 0.9; line-height: 1.6;">${item.description}</p>`;
+                html += `</div>`;
+              });
+              html += `</div>`;
+            } else if (m.type === "tags") {
+              html += `<div style="display: flex; flex-wrap: wrap; gap: 10px;">`;
+              m.items.forEach((tag) => {
+                html += `<span style="background: ${this.data.template === "cyber" ? "rgba(0,255,255,0.1)" : this.data.template === "dark" ? "#3f3f46" : "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)"}; color: ${this.data.template === "cyber" ? "#00ffff" : this.data.template === "dark" ? "#a1a1aa" : "#2563eb"}; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; border: ${this.data.template === "cyber" ? "1px solid rgba(0,255,255,0.5)" : this.data.template === "dark" ? "1px solid #52525b" : "1px solid #bfdbfe"};">${tag}</span>`;
+              });
+              html += `</div>`;
+            } else if (m.type === "text") {
+              html += `<div style="${style.card}">`;
+              html += `<p style="margin: 0; line-height: 1.8; color: ${secondaryColor}; white-space: pre-wrap;">${m.items || ""}</p>`;
+              html += `</div>`;
+            }
+
+            html += `</div>`;
+          });
+
+          html += `</div></div>`;
+          preview.innerHTML = html;
+        },
+
+        requestExport(type) {
+          this.pendingExportType = type;
+          document.getElementById("githubStarModal").classList.add("active");
+        },
+
+        closeGithubStarModal() {
+          document.getElementById("githubStarModal").classList.remove("active");
+          // 注意：不要在这里重置 pendingExportType，因为确认导出时还需要用到
+        },
+
+        confirmStarAndExport() {
+          // 先保存导出类型，避免被后续操作覆盖
+          const type = this.pendingExportType;
+          
+          window.open("https://github.com/2313623432/-.git", "_blank");
+          this.closeGithubStarModal();
+          this.pendingExportType = null; // 在这里重置
+          
+          if (type === "pdf") {
+            this.exportPDF();
+          } else if (type === "html") {
+            this.exportHTML();
+          }
+        },
+
+        skipStarAndExport() {
+          // 先保存导出类型，避免被后续操作覆盖
+          const type = this.pendingExportType;
+          
+          this.closeGithubStarModal();
+          this.pendingExportType = null; // 在这里重置
+          
+          if (type === "pdf") {
+            this.exportPDF();
+          } else if (type === "html") {
+            this.exportHTML();
+          }
+        },
+
+        generateFullHTML() {
+          const b = this.data.basics;
+          const style = this.getTemplateStyles();
+          const isDark =
+            this.data.template === "cyber" || this.data.template === "dark";
+          const textColor = isDark ? "#fff" : "#1e293b";
+          const secondaryColor = isDark ? "#cbd5e1" : "#475569";
+          const lang = this.data.language;
+
+          let html = `<!DOCTYPE html>
+<html lang="${lang === "zh" ? "zh-CN" : "en"}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${b.name} - ${b.title}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #f1f5f9; 
+            color: ${textColor}; 
+            line-height: 1.6; 
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            background: ${style.bg}; 
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
+            border-radius: 16px; 
+            overflow: hidden;
+        }
+        .header { ${style.header} }
+        .name { ${style.name} }
+        .section { padding: 0 40px 40px; }
+        .section-title { ${style.sectionTitle} margin-bottom: 20px; }
+        .card { ${style.card} }
+        .tag { 
+            display: inline-block; 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            margin: 0 8px 8px 0;
+            background: ${isDark ? (this.data.template === "cyber" ? "rgba(0,255,255,0.1)" : "#3f3f46") : "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)"};
+            color: ${isDark ? (this.data.template === "cyber" ? "#00ffff" : "#a1a1aa") : "#2563eb"};
+            border: ${this.data.template === "cyber" ? "1px solid rgba(0,255,255,0.5)" : this.data.template === "dark" ? "1px solid #52525b" : "1px solid #bfdbfe"};
+        }
+        @media (max-width: 768px) {
+            .container { margin: 0; border-radius: 0; }
+            .section { padding: 0 20px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            ${b.avatar ? `<img src="${b.avatar}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; margin-bottom: 16px; border: 4px solid rgba(255,255,255,0.3);">` : ""}
+            <h1 class="name">${b.name}</h1>
+            <div style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 12px;">${b.title}</div>
+            <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; font-size: 0.875rem; opacity: 0.8;">
+                <span><i class="fas fa-envelope"></i> ${b.email}</span>
+                <span><i class="fas fa-phone"></i> ${b.phone}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${b.location}</span>
+                ${b.website ? `<span><i class="fas fa-globe"></i> ${b.website}</span>` : ""}
+            </div>
+        </div>`;
+
+          if (b.summary) {
+            html += `<div class="section">
+            <h2 class="section-title">${this.t("summary")}</h2>
+            <p style="line-height: 1.8; color: ${secondaryColor};">${b.summary}</p>
+        </div>`;
+          }
+
+          this.data.modules.forEach((m) => {
+            if (!m.items || (Array.isArray(m.items) && m.items.length === 0))
+              return;
+            if (m.type === "text" && !m.items) return;
+
+            html += `<div class="section">
+            <h2 class="section-title"><i class="fas ${m.icon}"></i> ${m.title}</h2>`;
+
+            if (m.type === "timeline") {
+              m.items.forEach((item) => {
+                html += `<div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; flex-wrap: wrap;">
+                        <h3 style="font-weight: 700; font-size: 1.1rem;">${item.title}</h3>
+                        <span style="font-size: 0.875rem; opacity: 0.7;">${item.date}</span>
+                    </div>
+                    <div style="font-weight: 600; opacity: 0.8; margin-bottom: 8px;">${item.subtitle}</div>
+                    ${item.description ? `<p style="opacity: 0.8; line-height: 1.6;">${item.description}</p>` : ""}
+                </div>`;
+              });
+            } else if (m.type === "projects") {
+              html += `<div style="display: grid; gap: 20px;">`;
+              m.items.forEach((item) => {
+                html += `<div class="card" style="${item.featured ? "border: 2px solid " + (this.data.template === "cyber" ? "#00ffff" : "#8b5cf6") + ";" : ""}">
+                    ${item.featured ? `<div style="display: inline-block; background: ${this.data.template === "cyber" ? "#00ffff" : "#8b5cf6"}; color: ${this.data.template === "cyber" ? "#0f172a" : "white"}; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px;">Featured</div>` : ""}
+                    <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                        <h3 style="font-weight: 700; font-size: 1.2rem;">${item.title}</h3>
+                        ${
+                          m.config?.showLinks &&
+                          (item.links?.demo || item.links?.github)
+                            ? `
+                        <div>
+                            ${item.links.demo ? `<a href="${item.links.demo}" class="btn" style="background: ${this.data.template === "cyber" ? "transparent" : "#3b82f6"}; color: ${this.data.template === "cyber" ? "#00ffff" : "white"}; padding: 4px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none; border: ${this.data.template === "cyber" ? "1px solid #00ffff" : "none"};" target="_blank">${this.t("linkDemoLabel")}</a>` : ""}
+                            ${item.links.github ? `<a href="${item.links.github}" class="btn" style="background: ${this.data.template === "cyber" ? "transparent" : "#1e293b"}; color: ${this.data.template === "cyber" ? "#00ffff" : "white"}; padding: 4px 12px; border-radius: 6px; font-size: 0.875rem; text-decoration: none; border: ${this.data.template === "cyber" ? "1px solid #00ffff" : "none"};" target="_blank">GitHub</a>` : ""}
+                        </div>` : ""
+                        }
+                    </div>
+                    <div style="opacity: 0.7; font-size: 0.875rem; margin-bottom: 12px;">${item.role || ""} ${item.date ? "· " + item.date : ""}</div>
+                    ${item.tech?.length ? `<div style="margin-bottom: 12px;">${item.tech.map((t) => `<span class="tag">${t}</span>`).join("")}</div>` : ""}
+                    ${item.description ? `<p style="opacity: 0.9; line-height: 1.6;">${item.description}</p>` : ""}
+                </div>`;
+              });
+              html += `</div>`;
+            } else if (m.type === "tags") {
+              html += `<div>${m.items.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>`;
+            } else if (m.type === "text") {
+              html += `<div class="card"><p style="line-height: 1.8; color: ${secondaryColor}; white-space: pre-wrap;">${m.items || ""}</p></div>`;
+            }
+
+            html += `</div>`;
+          });
+
+          html += `</div>
+    <div style="text-align: center; padding: 20px; color: #64748b; font-size: 0.875rem;">
+        Generated by Resume Pro Max
+    </div>
+</body>
+</html>`;
+          return html;
+        },
+
+        exportPDF() {
+          const element = document.getElementById("resumePreview");
+          const opt = {
+            margin: 0,
+            filename: `${this.data.basics.name}_Resume.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          };
+          const originalTransform = element.style.transform;
+          element.style.transform = "none";
+          html2pdf()
+            .set(opt)
+            .from(element)
+            .save()
+            .catch((e) => {
+              console.error("导出 PDF 出错", e);
+              alert(
+                this.data.language === "zh"
+                  ? "导出 PDF 时出错，请稍后重试。"
+                  : "Error exporting PDF, please try again.",
+              );
+            })
+            .finally(() => {
+              element.style.transform = originalTransform;
+            });
+        },
+
+        exportHTML() {
+          const html = this.generateFullHTML();
+          const blob = new Blob([html], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          // sanitize filename
+          const filename = `${(this.data.basics.name || "resume").replace(/[^a-zA-Z0-9_\-\u4e00-\u9fa5]/g, "_")}_Resume.html`;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 200);
+        },
+
+        downloadZip() {
+          const zip = new JSZip();
+          zip.file("index.html", this.generateFullHTML());
+          zip.file(
+            "README.txt",
+            `${this.data.basics.name} Resume\n\n${this.data.language === "zh" ? "使用说明" : "Instructions"}:\n1. ${this.data.language === "zh" ? "解压文件" : "Extract files"}\n2. ${this.data.language === "zh" ? "双击 index.html 本地查看" : "Double click index.html to view locally"}\n3. ${this.data.language === "zh" ? "或上传到 GitHub Pages / Vercel / Netlify 部署" : "Or upload to GitHub Pages / Vercel / Netlify for deployment"}\n\nGitHub: https://github.com/2313623432/-.git`,
+          );
+          zip.generateAsync({ type: "blob" }).then((content) => {
+            saveAs(content, `${this.data.basics.name}_Resume.zip`);
+          });
+        },
+
+        copyHTML() {
+          navigator.clipboard.writeText(this.generateFullHTML()).then(() => {
+            alert(
+              this.data.language === "zh"
+                ? "HTML代码已复制到剪贴板！"
+                : "HTML code copied to clipboard!",
+            );
+          });
+        },
+
+        openDeployModal() {
+          document.getElementById("deployModal").classList.add("active");
+        },
+
+        closeDeployModal() {
+          document.getElementById("deployModal").classList.remove("active");
+        },
+
+        zoomIn() {
+          if (this.zoom < 1.2) {
+            this.zoom += 0.1;
+            this.updateZoom();
+          }
+        },
+
+        zoomOut() {
+          if (this.zoom > 0.6) {
+            this.zoom -= 0.1;
+            this.updateZoom();
+          }
+        },
+
+        updateZoom() {
+          const preview = document.getElementById("resumePreview");
+          if (preview) {
+            preview.style.transform = `scale(${this.zoom})`;
+            preview.style.transformOrigin = "top center";
+          }
+          const label = document.getElementById("zoomLevel");
+          if (label) {
+            label.textContent = Math.round(this.zoom * 100) + "%";
+          }
+        },
+      };
+
+      window.app = app;
+      window.i18n = i18n;
+
+      window.onload = function () {
+        window.isMobile =
+          /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+            navigator.userAgent,
+          );
+        const isMobile = window.isMobile;
+
+        particlesJS("particles-js", {
+          particles: {
+            number: {
+              value: isMobile ? 30 : 80,
+              density: { enable: true, value_area: isMobile ? 600 : 800 },
+            },
+            color: { value: "#ffffff" },
+            shape: { type: "circle", stroke: { width: 0, color: "#000000" } },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: {
+              enable: true,
+              distance: 150,
+              color: "#ffffff",
+              opacity: 0.4,
+              width: 1,
+            },
+            move: {
+              enable: true,
+              speed: isMobile ? 3 : 6,
+              direction: "none",
+              random: false,
+              straight: false,
+              out_mode: "out",
+              bounce: false,
+            },
+          },
+          interactivity: {
+            detect_on: "canvas",
+            events: {
+              onhover: { enable: !isMobile, mode: "grab" },
+              onclick: { enable: !isMobile, mode: "push" },
+              resize: true,
+            },
+            modes: {
+              grab: { distance: 140, line_linked: { opacity: 1 } },
+              bubble: {
+                distance: 400,
+                size: 40,
+                duration: 2,
+                opacity: 8,
+                speed: 3,
+              },
+              repulse: { distance: 200, duration: 0.4 },
+              push: { particles_nb: 4 },
+              remove: { particles_nb: 2 },
+            },
+          },
+          retina_detect: true,
+        });
+
+        app.init();
+      };
+    </script>
+  </body>
+</html>
