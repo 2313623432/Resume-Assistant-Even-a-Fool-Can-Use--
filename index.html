@@ -7,6 +7,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.11.0/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.worker.min.js';</script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -657,6 +660,35 @@
         transition: transform 0.1s ease;
       }
 
+      /* Toggle switch */
+      .switch {
+        width: 44px;
+        height: 24px;
+        background: #e2e8f0;
+        border-radius: 12px;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.3s;
+      }
+      .switch::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      }
+      .switch.active {
+        background: #667eea;
+      }
+      .switch.active::after {
+        transform: translateX(20px);
+      }
+
       .editor-area {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
@@ -1264,6 +1296,26 @@
         color: var(--text-secondary);
         font-size: 0.75rem;
       }
+
+      /* Resume section for page-break support */
+      .resume-section {
+        page-break-inside: avoid;
+      }
+
+      @media print {
+        .resume-page {
+          width: 210mm !important;
+          min-height: auto !important;
+          box-shadow: none !important;
+          animation: none !important;
+        }
+        .resume-page * {
+          animation: none !important;
+        }
+        .resume-section {
+          page-break-inside: avoid;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1439,6 +1491,90 @@
                   深色科技
                 </div>
               </div>
+              <!-- New templates -->
+              <div class="template-card template-glass" onclick="app.selectTemplate('glass')" data-template="glass" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-wine-glass" style="color: rgba(255,255,255,0.7)"></i>
+                </div>
+                <div class="template-label" style="background: rgba(99,102,241,0.9); color: white;" data-i18n="templateGlass">玻璃拟态</div>
+              </div>
+              <div class="template-card template-brutal" onclick="app.selectTemplate('brutal')" data-template="brutal" style="background: #fef08a;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-square" style="color: #1e293b; font-size: 2rem;"></i>
+                </div>
+                <div class="template-label" style="background: #1e293b; color: #fef08a;" data-i18n="templateBrutal">新粗野主义</div>
+              </div>
+              <div class="template-card template-editorial" onclick="app.selectTemplate('editorial')" data-template="editorial" style="background: #faf9f7; border: 1px solid #d4c5b2;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-newspaper" style="color: #8b7355;"></i>
+                </div>
+                <div class="template-label" style="background: #8b7355; color: #fff;" data-i18n="templateEditorial">编辑杂志</div>
+              </div>
+              <div class="template-card template-code" onclick="app.selectTemplate('code')" data-template="code" style="background: #1a1a2e;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-code" style="color: #e94560; font-size: 1.5rem;"></i>
+                </div>
+                <div class="template-label" style="background: rgba(22,33,62,0.95); color: #e94560;" data-i18n="templateCode">开发者</div>
+              </div>
+              <div class="template-card template-vibrant" onclick="app.selectTemplate('vibrant')" data-template="vibrant" style="background: linear-gradient(135deg, #fde68a, #fca5a5, #93c5fd);">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-palette" style="color: rgba(255,255,255,0.8); font-size: 1.4rem;"></i>
+                </div>
+                <div class="template-label" style="background: rgba(249,115,22,0.9); color: white;" data-i18n="templateVibrant">创意渐变</div>
+              </div>
+              <div class="template-card template-swiss" onclick="app.selectTemplate('swiss')" data-template="swiss" style="background: #fff; border: 1px solid #eee;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-ruler-combined" style="color: #aaa;"></i>
+                </div>
+                <div class="template-label" style="background: #111; color: #fff;" data-i18n="templateSwiss">瑞士国际</div>
+              </div>
+              <div class="template-card template-zen" onclick="app.selectTemplate('zen')" data-template="zen" style="background: #f5f0eb; border: 1px solid #d4c5b2;">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-leaf" style="color: #8b7355;"></i>
+                </div>
+                <div class="template-label" style="background: rgba(60,47,40,0.9); color: #e8d5c4;" data-i18n="templateZen">禅意极简</div>
+              </div>
+              <div class="template-card template-ocean" onclick="app.selectTemplate('ocean')" data-template="ocean" style="background: linear-gradient(180deg, #075985, #0c4a6e);">
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                  <i class="fas fa-water" style="color: rgba(255,255,255,0.6);"></i>
+                </div>
+                <div class="template-label" style="background: rgba(14,165,233,0.9); color: white;" data-i18n="templateOcean">深海渐变</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section" id="fontSettingsSection">
+            <div class="section-title">
+              <span
+                ><i class="fas fa-text-height" style="margin-right: 6px"></i
+                ><span data-i18n="fontSettings">字体设置</span></span
+              >
+            </div>
+            <div class="form-group">
+              <label data-i18n="nameFontSize">姓名字号</label>
+              <input type="range" min="1.5" max="4" step="0.1" value="2.5"
+                     oninput="app.updateFontConfig('nameSize', parseFloat(this.value))">
+              <span style="font-size:0.75rem;color:var(--text-secondary)" id="nameSizeLabel">2.5rem</span>
+            </div>
+            <div class="form-group">
+              <label data-i18n="sectionTitleFontSize">标题字号</label>
+              <input type="range" min="0.7" max="2" step="0.05" value="1"
+                     oninput="app.updateFontConfig('sectionTitleSize', parseFloat(this.value))">
+              <span style="font-size:0.75rem;color:var(--text-secondary)" id="sectionSizeLabel">1x</span>
+            </div>
+            <div class="form-group">
+              <label data-i18n="bodyFontSize">正文字号</label>
+              <input type="range" min="0.7" max="1.5" step="0.05" value="1"
+                     oninput="app.updateFontConfig('bodySize', parseFloat(this.value))">
+              <span style="font-size:0.75rem;color:var(--text-secondary)" id="bodySizeLabel">1x</span>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;justify-content:space-between;">
+              <span data-i18n="boldName" style="font-size:0.875rem;font-weight:600;">姓名加粗</span>
+              <div class="switch active" id="switchNameBold" onclick="app.toggleFontBold('nameBold')" style="display:inline-block;"></div>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;justify-content:space-between;">
+              <span data-i18n="boldSectionTitle" style="font-size:0.875rem;font-weight:600;">标题加粗</span>
+              <div class="switch active" id="switchSectionBold" onclick="app.toggleFontBold('sectionTitleBold')" style="display:inline-block;"></div>
             </div>
           </div>
 
@@ -1459,6 +1595,27 @@
               <i class="fas fa-plus"></i>
               <span data-i18n="addCustomModule">添加自定义模块</span>
             </button>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <i class="fas fa-file-import" style="margin-right:6px;"></i>
+              <span data-i18n="importResume">导入简历文件</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input type="file" id="docxInput" accept=".docx" style="display:none" onchange="app.handleDocxImport(this)">
+              <button class="btn-export" style="background:#dbeafe;color:#2563eb;grid-column:auto;"
+                      onclick="document.getElementById('docxInput').click()">
+                <i class="fas fa-file-word"></i>
+                <span>WORD (.docx)</span>
+              </button>
+              <input type="file" id="pdfImportInput" accept=".pdf" style="display:none" onchange="app.handlePdfImport(this)">
+              <button class="btn-export" style="background:#fef3c7;color:#d97706;grid-column:auto;"
+                      onclick="document.getElementById('pdfImportInput').click()">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDF</span>
+              </button>
+            </div>
           </div>
 
           <div class="section">
@@ -1485,7 +1642,23 @@
                 <i class="fas fa-rocket"></i>
                 <span data-i18n="deployWeb">部署到互联网</span>
               </button>
+              <button
+                class="btn-export"
+                style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color: #7c3aed;"
+                onclick="app.openAiOptimize()"
+              >
+                <i class="fas fa-robot"></i>
+                <span data-i18n="aiOptimize">AI 优化</span>
+              </button>
             </div>
+            <button
+              class="btn-export"
+              style="margin-top: 8px; background: rgba(255,255,255,0.6); color: var(--text-secondary); font-size: 0.75rem;"
+              onclick="app.openAiSettings()"
+            >
+              <i class="fas fa-cog"></i>
+              <span data-i18n="aiSettingsShort">AI 设置</span>
+            </button>
           </div>
         </div>
       </aside>
@@ -1839,6 +2012,63 @@
       </div>
     </div>
 
+    <!-- AI Settings Modal -->
+    <div class="modal" id="aiSettingsModal" onclick="if(event.target===this)app.closeAiSettings()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-robot" style="color:#8b5cf6;"></i> <span data-i18n="aiSettings">AI 设置</span></h3>
+          <button onclick="app.closeAiSettings()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-secondary);"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label data-i18n="aiEndpoint">API 地址</label>
+            <input type="url" id="aiEndpoint" placeholder="https://api.deepseek.com/v1/chat/completions"
+                   oninput="app.updateAiSetting('endpoint', this.value)">
+          </div>
+          <div class="form-group">
+            <label data-i18n="aiApiKey">API Key</label>
+            <input type="password" id="aiApiKey" placeholder="sk-..."
+                   oninput="app.updateAiSetting('apiKey', this.value)">
+          </div>
+          <div class="form-group">
+            <label data-i18n="aiModel">模型</label>
+            <input type="text" id="aiModel" placeholder="deepseek-chat"
+                   oninput="app.updateAiSetting('model', this.value)">
+          </div>
+          <button class="btn-add" onclick="app.saveAiSettings()"
+                  style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;border:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-save"></i> <span data-i18n="saveSettings">保存设置</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Optimize Modal -->
+    <div class="modal" id="aiOptimizeModal" onclick="if(event.target===this)app.closeAiOptimize()">
+      <div class="modal-content" style="max-width:640px;">
+        <div class="modal-header">
+          <h3><i class="fas fa-magic" style="color:#8b5cf6;"></i> <span data-i18n="aiOptimize">AI 优化简历</span></h3>
+          <button onclick="app.closeAiOptimize()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-secondary);"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label data-i18n="pasteJD">粘贴目标职位 JD (Job Description)</label>
+            <textarea id="aiJD" rows="10" placeholder="将招聘需求/职位描述粘贴到这里..."></textarea>
+          </div>
+          <div class="form-group">
+            <label data-i18n="aiCustomPrompt">优化指令 (可选)</label>
+            <input type="text" id="aiCustomPrompt" data-i18n-placeholder="aiCustomPromptPlaceholder" placeholder="例如：突出管理经验、缩短个人总结">
+          </div>
+          <button class="btn-add" id="aiOptimizeBtn"
+                  onclick="app.runAiOptimize()"
+                  style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;border:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <i class="fas fa-magic"></i> <span data-i18n="startOptimize">开始优化</span>
+          </button>
+          <div id="aiStatus" style="margin-top:12px;font-size:0.875rem;color:var(--text-secondary);display:none;"></div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
       const i18n = {
@@ -1946,6 +2176,33 @@
           projects: "项目经历",
           skills: "技能特长",
           awards: "荣誉奖项",
+          templateGlass: "玻璃拟态",
+          templateBrutal: "新粗野主义",
+          templateEditorial: "编辑杂志",
+          templateCode: "开发者",
+          templateVibrant: "创意渐变",
+          templateSwiss: "瑞士国际",
+          templateZen: "禅意极简",
+          templateOcean: "深海渐变",
+          fontSettings: "字体设置",
+          nameFontSize: "姓名字号",
+          sectionTitleFontSize: "标题字号",
+          bodyFontSize: "正文字号",
+          boldName: "姓名加粗",
+          boldSectionTitle: "标题加粗",
+          importResume: "导入简历文件",
+          aiSettings: "AI 设置",
+          aiSettingsShort: "AI 设置",
+          aiEndpoint: "API 地址",
+          aiApiKey: "API Key",
+          aiModel: "模型",
+          saveSettings: "保存设置",
+          aiOptimize: "AI 优化",
+          pasteJD: "粘贴目标职位 JD (Job Description)",
+          aiCustomPrompt: "优化指令 (可选)",
+          aiCustomPromptPlaceholder: "例如：突出管理经验、缩短个人总结",
+          startOptimize: "开始优化",
+          optimizing: "优化中...",
         },
         en: {
           appName: "Resume Pro Max",
@@ -2053,6 +2310,33 @@
           projects: "Projects",
           skills: "Skills",
           awards: "Awards & Honors",
+          templateGlass: "Glassmorphism",
+          templateBrutal: "Neubrutalism",
+          templateEditorial: "Magazine",
+          templateCode: "Developer",
+          templateVibrant: "Vibrant",
+          templateSwiss: "Swiss Style",
+          templateZen: "Zen Minimal",
+          templateOcean: "Deep Ocean",
+          fontSettings: "Font Settings",
+          nameFontSize: "Name Size",
+          sectionTitleFontSize: "Section Title Size",
+          bodyFontSize: "Body Text Size",
+          boldName: "Bold Name",
+          boldSectionTitle: "Bold Section Title",
+          importResume: "Import Resume File",
+          aiSettings: "AI Settings",
+          aiSettingsShort: "AI Settings",
+          aiEndpoint: "API Endpoint",
+          aiApiKey: "API Key",
+          aiModel: "Model",
+          saveSettings: "Save Settings",
+          aiOptimize: "AI Optimize",
+          pasteJD: "Paste Job Description (JD)",
+          aiCustomPrompt: "Custom Instructions (Optional)",
+          aiCustomPromptPlaceholder: "E.g., Highlight management experience, shorten summary",
+          startOptimize: "Start Optimize",
+          optimizing: "Optimizing...",
         },
       };
 
@@ -2071,6 +2355,18 @@
             avatar: null,
           },
           modules: [],
+          fontConfig: {
+            nameSize: 2.5,
+            sectionTitleSize: 1,
+            bodySize: 1,
+            nameBold: true,
+            sectionTitleBold: true,
+          },
+          aiSettings: {
+            endpoint: "https://api.deepseek.com/v1/chat/completions",
+            apiKey: "",
+            model: "deepseek-chat",
+          },
         },
 
         currentModuleId: null,
@@ -2209,6 +2505,8 @@
             try {
               const parsed = JSON.parse(saved);
               this.data = { ...this.data, ...parsed };
+              if (!this.data.fontConfig) this.data.fontConfig = { nameSize: 2.5, sectionTitleSize: 1, bodySize: 1, nameBold: true, sectionTitleBold: true };
+              if (!this.data.aiSettings) this.data.aiSettings = { endpoint: "https://api.deepseek.com/v1/chat/completions", apiKey: "", model: "deepseek-chat" };
               if (!Array.isArray(this.data.modules)) {
                 this.initDefaultModules();
               }
@@ -3036,8 +3334,96 @@
                 "color: #a1a1aa; border-bottom: 1px solid #3f3f46; padding-bottom: 8px; margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;",
               card: "background: #27272a; border: 1px solid #3f3f46; padding: 20px; margin-bottom: 16px; transition: all 0.3s; color: #d4d4d8;",
             },
+            glass: {
+              bg: "linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%)",
+              header: "background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.8); border-radius: 24px; margin: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.08);",
+              name: "font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;",
+              sectionTitle: "color: #6366f1; border-bottom: 2px solid rgba(99,102,241,0.2); padding-bottom: 8px; margin-bottom: 16px; font-weight: 700;",
+              card: "background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.9); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.04);",
+            },
+            brutal: {
+              bg: "#fffbeb",
+              header: "background: #fef08a; border: 4px solid #1e293b; padding: 40px; text-align: left; box-shadow: 8px 8px 0 #1e293b; margin: 20px;",
+              name: "font-size: 2.5rem; font-weight: 900; color: #1e293b; text-transform: uppercase; margin-bottom: 8px;",
+              sectionTitle: "background: #1e293b; color: #fef08a; padding: 8px 16px; font-weight: 900; text-transform: uppercase; display: inline-block; border: 3px solid #1e293b; margin-bottom: 16px;",
+              card: "background: white; border: 4px solid #1e293b; padding: 20px; margin-bottom: 16px; box-shadow: 6px 6px 0 #1e293b;",
+            },
+            editorial: {
+              bg: "#faf9f7",
+              header: "border-bottom: 1px solid #d4c5b2; padding: 60px 40px 40px; text-align: center;",
+              name: "font-size: 2.8rem; font-weight: 400; font-family: Georgia, 'Times New Roman', serif; letter-spacing: 0.02em; color: #2c2416; margin-bottom: 12px;",
+              sectionTitle: "font-family: Georgia, serif; color: #8b7355; font-size: 1rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.15em; border-bottom: 2px solid #d4c5b2; padding-bottom: 10px; margin-bottom: 20px;",
+              card: "border-left: 1px solid #d4c5b2; padding: 0 0 0 24px; margin-bottom: 28px;",
+            },
+            code: {
+              bg: "#1a1a2e",
+              header: "background: #16213e; border: 1px solid #0f3460; padding: 40px; text-align: left; font-family: 'Fira Code', 'Consolas', monospace;",
+              name: "font-size: 2.5rem; font-weight: 700; color: #e94560; font-family: 'Fira Code', 'Consolas', monospace; margin-bottom: 8px;",
+              sectionTitle: "color: #16c79a; font-family: 'Fira Code', monospace; font-weight: 700; border-bottom: 2px solid #0f3460; padding-bottom: 8px; margin-bottom: 16px;",
+              card: "background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 20px; margin-bottom: 16px; color: #eaeaea;",
+            },
+            vibrant: {
+              bg: "linear-gradient(135deg, #fef3c7 0%, #fde68a 30%, #fca5a5 70%, #93c5fd 100%)",
+              header: "background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); padding: 40px; text-align: center; border-radius: 24px; margin: 20px;",
+              name: "font-size: 2.8rem; font-weight: 900; color: #1e293b; text-shadow: 2px 2px 0 rgba(255,255,255,0.5); margin-bottom: 8px;",
+              sectionTitle: "background: linear-gradient(135deg, #f97316, #ef4444); color: white; padding: 8px 20px; border-radius: 20px; font-weight: 700; display: inline-block; margin-bottom: 16px;",
+              card: "background: rgba(255,255,255,0.7); border-radius: 20px; padding: 24px; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.06);",
+            },
+            swiss: {
+              bg: "#ffffff",
+              header: "padding: 48px 40px 32px; text-align: left; border-bottom: none;",
+              name: "font-size: 3rem; font-weight: 700; letter-spacing: -0.03em; color: #111; line-height: 1; margin-bottom: 8px;",
+              sectionTitle: "font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #888; margin-bottom: 20px;",
+              card: "padding: 0 0 16px 0; margin-bottom: 16px; border-bottom: 1px solid #eee;",
+            },
+            zen: {
+              bg: "#f5f0eb",
+              header: "padding: 48px 40px; text-align: center; border-bottom: 1px solid #d4c5b2;",
+              name: "font-size: 2.2rem; font-weight: 400; color: #3c2f28; letter-spacing: 0.08em; margin-bottom: 8px;",
+              sectionTitle: "color: #8b7355; font-weight: 400; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid #d4c5b2;",
+              card: "padding: 0 0 20px 0; margin-bottom: 20px; border-bottom: 1px dashed #d4c5b2;",
+            },
+            ocean: {
+              bg: "linear-gradient(to bottom, #f0f9ff 0%, #e0f2fe 100%)",
+              header: "background: linear-gradient(180deg, #0c4a6e 0%, #075985 100%); color: #e0f2fe; padding: 48px 40px; text-align: center; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);",
+              name: "font-size: 2.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 10px rgba(14,165,233,0.5); margin-bottom: 8px;",
+              sectionTitle: "color: #0369a1; border-left: 4px solid #0284c7; padding-left: 12px; font-weight: 700; margin-bottom: 16px;",
+              card: "background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(14,165,233,0.08); border: 1px solid #e0f2fe;",
+            },
           };
-          return styles[this.data.template] || styles.modern;
+          const tmpl = styles[this.data.template] || styles.modern;
+          const fc = this.data.fontConfig;
+          let nameStyle = tmpl.name;
+          let sectionStyle = tmpl.sectionTitle;
+          nameStyle = nameStyle.replace(/font-size:\s*[\d.]+rem/, `font-size: ${fc.nameSize}rem`);
+          nameStyle = nameStyle.replace(/font-weight:\s*\d+/, `font-weight: ${fc.nameBold ? '800' : '400'}`);
+          sectionStyle = sectionStyle.replace(/font-size:\s*[\d.]+rem/, `font-size: ${fc.sectionTitleSize}rem`);
+          sectionStyle = sectionStyle.replace(/font-weight:\s*\d+/, `font-weight: ${fc.sectionTitleBold ? '700' : '400'}`);
+          return { ...tmpl, name: nameStyle, sectionTitle: sectionStyle };
+        },
+
+        updateFontConfig(key, value) {
+          this.data.fontConfig[key] = value;
+          this.save();
+          this.renderPreview();
+          if (key === 'nameSize') {
+            const el = document.getElementById('nameSizeLabel');
+            if (el) el.textContent = value + 'rem';
+          } else if (key === 'sectionTitleSize') {
+            const el = document.getElementById('sectionSizeLabel');
+            if (el) el.textContent = value + 'x';
+          } else if (key === 'bodySize') {
+            const el = document.getElementById('bodySizeLabel');
+            if (el) el.textContent = value + 'x';
+          }
+        },
+
+        toggleFontBold(key) {
+          this.data.fontConfig[key] = !this.data.fontConfig[key];
+          const el = document.getElementById(key === 'nameBold' ? 'switchNameBold' : 'switchSectionBold');
+          if (el) el.classList.toggle('active', this.data.fontConfig[key]);
+          this.save();
+          this.renderPreview();
         },
 
         renderPreview() {
@@ -3065,12 +3451,12 @@
             html += `<span><i class="fas fa-globe"></i> ${b.website}</span>`;
           html += `</div></div>`;
 
-          html += `<div style="padding: 40px;">`;
+          html += `<div style="padding: 40px; font-size: ${this.data.fontConfig.bodySize}rem;">`;
 
           if (b.summary) {
-            html += `<div style="margin-bottom: 32px;">`;
+            html += `<div class="resume-section" style="margin-bottom: 32px;">`;
             html += `<h2 style="${style.sectionTitle}">${this.t("summary")}</h2>`;
-            html += `<p style="line-height: 1.8; color: ${secondaryColor};">${b.summary}</p>`;
+            html += `<p style="line-height: 1.8; color: ${secondaryColor}; white-space: pre-wrap;">${b.summary}</p>`;
             html += `</div>`;
           }
 
@@ -3079,7 +3465,7 @@
               return;
             if (m.type === "text" && !m.items) return;
 
-            html += `<div style="margin-bottom: 32px;">`;
+            html += `<div class="resume-section" style="margin-bottom: 32px;">`;
             html += `<h2 style="${style.sectionTitle}"><i class="fas ${m.icon}"></i> ${m.title}</h2>`;
 
             if (m.type === "timeline") {
@@ -3091,7 +3477,7 @@
                 html += `</div>`;
                 html += `<div style="font-weight: 600; opacity: 0.8; margin-bottom: 8px; ${this.data.template === "modern" ? "color: #667eea;" : this.data.template === "cyber" ? "color: #00ffff;" : ""}">${item.subtitle}</div>`;
                 if (item.description)
-                  html += `<p style="margin: 0; opacity: 0.8; line-height: 1.6;">${item.description}</p>`;
+                  html += `<p style="margin: 0; opacity: 0.8; line-height: 1.6; white-space: pre-wrap;">${item.description}</p>`;
                 html += `</div>`;
               });
             } else if (m.type === "projects") {
@@ -3123,7 +3509,7 @@
                   html += `</div>`;
                 }
                 if (item.description)
-                  html += `<p style="margin: 0; opacity: 0.9; line-height: 1.6;">${item.description}</p>`;
+                  html += `<p style="margin: 0; opacity: 0.9; line-height: 1.6; white-space: pre-wrap;">${item.description}</p>`;
                 html += `</div>`;
               });
               html += `</div>`;
@@ -3219,7 +3605,7 @@
         }
         .header { ${style.header} }
         .name { ${style.name} }
-        .section { padding: 0 40px 40px; }
+        .section { padding: 0 40px 40px; page-break-inside: avoid; font-size: ${this.data.fontConfig.bodySize}rem; }
         .section-title { ${style.sectionTitle} margin-bottom: 20px; }
         .card { ${style.card} }
         .tag { 
@@ -3256,7 +3642,7 @@
           if (b.summary) {
             html += `<div class="section">
             <h2 class="section-title">${this.t("summary")}</h2>
-            <p style="line-height: 1.8; color: ${secondaryColor};">${b.summary}</p>
+            <p style="line-height: 1.8; color: ${secondaryColor}; white-space: pre-wrap;">${b.summary}</p>
         </div>`;
           }
 
@@ -3276,7 +3662,7 @@
                         <span style="font-size: 0.875rem; opacity: 0.7;">${item.date}</span>
                     </div>
                     <div style="font-weight: 600; opacity: 0.8; margin-bottom: 8px;">${item.subtitle}</div>
-                    ${item.description ? `<p style="opacity: 0.8; line-height: 1.6;">${item.description}</p>` : ""}
+                    ${item.description ? `<p style="opacity: 0.8; line-height: 1.6; white-space: pre-wrap;">${item.description}</p>` : ""}
                 </div>`;
               });
             } else if (m.type === "projects") {
@@ -3298,7 +3684,7 @@
                     </div>
                     <div style="opacity: 0.7; font-size: 0.875rem; margin-bottom: 12px;">${item.role || ""} ${item.date ? "· " + item.date : ""}</div>
                     ${item.tech?.length ? `<div style="margin-bottom: 12px;">${item.tech.map((t) => `<span class="tag">${t}</span>`).join("")}</div>` : ""}
-                    ${item.description ? `<p style="opacity: 0.9; line-height: 1.6;">${item.description}</p>` : ""}
+                    ${item.description ? `<p style="opacity: 0.9; line-height: 1.6; white-space: pre-wrap;">${item.description}</p>` : ""}
                 </div>`;
               });
               html += `</div>`;
@@ -3323,11 +3709,12 @@
         exportPDF() {
           const element = document.getElementById("resumePreview");
           const opt = {
-            margin: 0,
+            margin: [10, 10, 10, 10],
             filename: `${this.data.basics.name}_Resume.pdf`,
             image: { type: "jpeg", quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            pagebreak: { mode: ["avoid-all", "css", "legacy"] },
           };
           const originalTransform = element.style.transform;
           element.style.transform = "none";
@@ -3419,6 +3806,416 @@
           const label = document.getElementById("zoomLevel");
           if (label) {
             label.textContent = Math.round(this.zoom * 100) + "%";
+          }
+        },
+
+        // --- File Import Methods ---
+
+        async handleDocxImport(input) {
+          const file = input.files[0];
+          if (!file) return;
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            const text = result.value;
+            this.populateFromText(text);
+            alert(this.data.language === 'zh' ? 'DOCX 导入成功！请检查并调整自动填充的内容。' : 'DOCX import successful! Please review and adjust the auto-filled content.');
+          } catch (e) {
+            console.error('DOCX parse error:', e);
+            alert(this.data.language === 'zh' ? 'DOCX 解析失败，请确认文件格式正确。' : 'DOCX parsing failed. Please verify the file format.');
+          }
+          input.value = '';
+        },
+
+        async handlePdfImport(input) {
+          const file = input.files[0];
+          if (!file) return;
+          try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const page = await pdf.getPage(i);
+              const content = await page.getTextContent();
+              const pageText = content.items.map(item => item.str).join(' ');
+              fullText += pageText + '\n';
+            }
+            console.log('PDF extracted text length:', fullText.length, 'pages:', pdf.numPages);
+            if (!fullText.trim()) {
+              alert(this.data.language === 'zh'
+                ? '此 PDF 可能是扫描件或图片，无法提取文字。请使用包含文字层的 PDF 文件。'
+                : 'This PDF appears to be a scanned image. Cannot extract text. Please use a PDF with a text layer.');
+              input.value = '';
+              return;
+            }
+            this.populateFromText(fullText);
+          } catch (e) {
+            console.error('PDF parse error:', e);
+            alert(this.data.language === 'zh' ? 'PDF 解析失败，请确认文件格式正确。' : 'PDF parsing failed. Please verify the file format.');
+          }
+          input.value = '';
+        },
+
+        populateFromText(text) {
+          const lines = text.split(/\n/).map(l => l.trim()).filter(l => l);
+          if (lines.length === 0) {
+            console.warn('populateFromText: no text to parse');
+            return;
+          }
+          console.log('populateFromText: parsing', lines.length, 'lines,', text.length, 'chars');
+
+          // Name: first short non-email/URL line (Chinese names typically 2-4 chars, allow up to 60)
+          const nameCandidate = lines.find(l => l.length > 0 && l.length < 60 && !l.includes('@') && !l.includes('http') && !/^\d/.test(l) && !/^(电话|手机|邮箱|地址|网址)/.test(l));
+          if (nameCandidate) {
+            this.data.basics.name = nameCandidate;
+            console.log('  Matched name:', nameCandidate);
+          }
+
+          // Email
+          const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+          if (emailMatch) {
+            this.data.basics.email = emailMatch[0];
+            console.log('  Matched email:', emailMatch[0]);
+          }
+
+          // Phone: international + Chinese format (1[3-9]xxxxxxxxx)
+          const phonePatterns = [
+            /1[3-9]\d{9}/,
+            /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/,
+            /\d{3,4}[-.\s]\d{7,8}/,
+          ];
+          for (const pat of phonePatterns) {
+            const m = text.match(pat);
+            if (m) {
+              this.data.basics.phone = m[0];
+              console.log('  Matched phone:', m[0]);
+              break;
+            }
+          }
+
+          // Website / URL
+          const urlMatch = text.match(/https?:\/\/[^\s]+/);
+          if (urlMatch) {
+            this.data.basics.website = urlMatch[0];
+            console.log('  Matched website:', urlMatch[0]);
+          }
+
+          // Location: look for Chinese city patterns
+          const cityMatch = text.match(/(?:城市|地点|地址|所在地)[:：]?\s*([^\n]{2,20})/);
+          if (cityMatch && !this.data.basics.location) {
+            this.data.basics.location = cityMatch[1].trim();
+            console.log('  Matched location:', cityMatch[1].trim());
+          }
+
+          // Title/Position
+          const titleMatch = text.match(/(?:职位|岗位|title)[:：]?\s*([^\n]{2,30})/i);
+          if (titleMatch) {
+            this.data.basics.title = titleMatch[1].trim();
+            console.log('  Matched title:', titleMatch[1].trim());
+          }
+
+          // Summary: longest paragraph >30 chars without dates, prefer lines with keywords
+          const summaryKeywords = /(负责|经验|能力|熟练|掌握|熟悉|参与|主导|管理|开发|设计|分析|优化)/;
+          const summaryCandidates = lines.filter(l => l.length > 30 && !/\d{4}[./]\d{1,2}/.test(l));
+          const preferredSummary = summaryCandidates.find(l => summaryKeywords.test(l));
+          const bestSummary = preferredSummary || (summaryCandidates.length > 0 ? summaryCandidates[0] : null);
+          if (bestSummary) {
+            this.data.basics.summary = bestSummary;
+            console.log('  Matched summary:', bestSummary.substring(0, 60) + '...');
+          }
+
+          // Skills: look for bundles of skill keywords (comma, space, or newline-separated)
+          const allTechKeywords = /(React|JavaScript|TypeScript|Python|Java|Node\.?js|Vue|Angular|SQL|Docker|AWS|CSS|HTML|Git|C\+\+|PHP|Ruby|Go|Rust|Kubernetes|Linux|MongoDB|Redis|GraphQL|REST|API|机器学习|深度学习|数据分析|产品经理|项目管理|UI|UX|Figma|PS|PR|AE|Excel|PPT|Word|沟通|团队|领导|策划|运营|市场营销|销售|财务|人力资源|法务|审计)/
+          const skillsCandidates = lines.filter(l =>
+            l.length > 10 && l.length < 500 && allTechKeywords.test(l)
+          );
+          if (skillsCandidates.length > 0) {
+            const skillsText = skillsCandidates.join(' ');
+            // Split by commas, Chinese commas, bullet points, or multiple spaces
+            const skillItems = skillsText.split(/[,，、•·\s]{2,}|[,，、•·]/).map(s => s.trim()).filter(s => s.length > 0 && s.length < 40);
+            if (skillItems.length > 0) {
+              const skillsModule = this.data.modules.find(m => m.id === 'skills');
+              if (skillsModule) {
+                skillsModule.items = skillItems;
+                console.log('  Matched skills:', skillItems.length, 'items');
+              }
+            }
+          }
+
+          // Experience / Education: look for date patterns and try to populate timeline modules
+          const dateLineIndices = [];
+          lines.forEach((l, i) => { if (/\d{4}[./-]\d{1,2}/.test(l)) dateLineIndices.push(i); });
+          console.log('  Found', dateLineIndices.length, 'date lines');
+
+          this.save();
+          this.renderPreview();
+          this.renderModuleList();
+          this.selectModule('basics');
+        },
+
+        // --- AI Methods ---
+
+        openAiSettings() {
+          const s = this.data.aiSettings;
+          document.getElementById('aiEndpoint').value = s.endpoint || '';
+          document.getElementById('aiApiKey').value = s.apiKey || '';
+          document.getElementById('aiModel').value = s.model || 'deepseek-chat';
+          document.getElementById('aiSettingsModal').classList.add('active');
+        },
+
+        closeAiSettings() {
+          document.getElementById('aiSettingsModal').classList.remove('active');
+        },
+
+        updateAiSetting(field, value) {
+          this.data.aiSettings[field] = value;
+        },
+
+        saveAiSettings() {
+          const endpoint = document.getElementById('aiEndpoint').value.trim();
+          const apiKey = document.getElementById('aiApiKey').value.trim();
+          const model = document.getElementById('aiModel').value.trim();
+
+          if (!endpoint) {
+            alert(this.data.language === 'zh' ? '请输入 API 地址' : 'Please enter the API endpoint');
+            return;
+          }
+          if (!apiKey) {
+            alert(this.data.language === 'zh' ? '请输入 API Key' : 'Please enter the API key');
+            return;
+          }
+          if (!/^https?:\/\/.+/.test(endpoint)) {
+            alert(this.data.language === 'zh' ? 'API 地址格式不正确，请以 http:// 或 https:// 开头' : 'Invalid API endpoint format. Must start with http:// or https://');
+            return;
+          }
+
+          this.data.aiSettings.endpoint = endpoint;
+          this.data.aiSettings.apiKey = apiKey;
+          this.data.aiSettings.model = model || 'gpt-4o';
+          this.save();
+          this.closeAiSettings();
+          alert(this.data.language === 'zh' ? 'AI 设置已保存！' : 'AI settings saved!');
+        },
+
+        openAiOptimize() {
+          const s = this.data.aiSettings;
+          if (!s.endpoint || !s.apiKey) {
+            this.openAiSettings();
+            alert(this.data.language === 'zh' ? '请先配置 AI API 设置' : 'Please configure AI API settings first');
+            return;
+          }
+          document.getElementById('aiOptimizeModal').classList.add('active');
+          document.getElementById('aiStatus').style.display = 'none';
+          document.getElementById('aiJD').value = '';
+          document.getElementById('aiCustomPrompt').value = '';
+        },
+
+        closeAiOptimize() {
+          document.getElementById('aiOptimizeModal').classList.remove('active');
+        },
+
+        async runAiOptimize() {
+          const jd = document.getElementById('aiJD').value.trim();
+          const customPrompt = document.getElementById('aiCustomPrompt').value.trim();
+          if (!jd) {
+            alert(this.data.language === 'zh' ? '请粘贴职位 JD' : 'Please paste the job JD');
+            return;
+          }
+
+          const btn = document.getElementById('aiOptimizeBtn');
+          const status = document.getElementById('aiStatus');
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 优化中...';
+          status.style.display = 'block';
+          status.innerHTML = this.data.language === 'zh' ? '正在分析 JD 并优化简历...' : 'Analyzing JD and optimizing resume...';
+          const zh = this.data.language === 'zh';
+
+          const s = this.data.aiSettings;
+
+          // Save pre-optimization data for undo
+          const preData = JSON.parse(JSON.stringify(this.data));
+
+          // Build resume JSON (strip avatar to save tokens)
+          const resumeJSON = JSON.stringify({
+            basics: { ...this.data.basics, avatar: null },
+            modules: this.data.modules,
+          }, null, 2);
+
+          const systemPrompt = `你是一位资深 HR 和简历优化专家。你的任务是根据目标岗位 JD（职位描述）优化候选人的简历，使其与 JD 高度匹配。
+
+请严格按照以下步骤操作：
+
+## 第一步：分析 JD
+- 从 JD 中提取 5-8 个核心硬技能要求（技术栈、工具、证书等）
+- 提取 3-5 个软实力要求（沟通、管理、协作等）
+- 提取 2-3 个行业/业务背景偏好
+- 确定 JD 强调的关键词（至少 5 个）
+
+## 第二步：逐模块优化简历
+对每个模块做如下优化：
+
+**个人简介 (summary)**：
+- 基于 JD 关键词重写 3-5 句话
+- 第一句概述匹配的年限和核心能力
+- 中间句展示与 JD 相关的关键成就
+- 最后一句表达与岗位的匹配度
+- 确保 JD 中的关键技能词自然融入
+
+**工作经历 (timeline 模块)**：
+- 每条经历用 STAR 法则（情境-任务-行动-结果）重写
+- 量化成果（使用数字、百分比、金额）
+- 突出与 JD 直接相关的经验
+- 使用 JD 中的动词和术语
+- 弱化无关经验
+
+**项目经历 (projects 模块)**：
+- 强调与 JD 行业/技术相关的项目
+- 在技术栈中补充 JD 提到的技术
+- 弱化无关项目（可缩短描述）
+
+**技能标签 (tags 模块)**：
+- 确保 JD 要求的核心技能全部包含
+- 移除与 JD 明显无关的技能
+- 按与 JD 的相关度排序（最相关的排前面）
+
+**教育背景**：保持不变（除非简历语言是英语）
+
+## 第三步：输出要求
+- 返回完整的 JSON，结构与输入完全一致
+- 不要遗漏任何字段（name, email, phone, location, website, summary 等）
+- 保持原始语言（中文简历输出中文，英文简历输出英文）
+- JSON 必须可解析，不要添加任何解释文字
+- 将 JSON 放在 \`\`\`json 代码块中`;
+
+          const userMessage = `目标岗位 JD：\n${jd}\n\n当前简历 JSON：\n${resumeJSON}`;
+
+          try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 120000);
+
+            status.innerHTML = zh ? '正在调用 AI，预计需要 15-30 秒...' : 'Calling AI, estimated 15-30 seconds...';
+
+            const response = await fetch(s.endpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${s.apiKey}`,
+              },
+              body: JSON.stringify({
+                model: s.model,
+                messages: [
+                  { role: 'system', content: systemPrompt },
+                  { role: 'user', content: userMessage },
+                ],
+                temperature: 0.5,
+                max_tokens: 8192,
+              }),
+              signal: controller.signal,
+            });
+            clearTimeout(timeout);
+
+            if (!response.ok) {
+              const errText = await response.text();
+              throw new Error(`API 错误 (${response.status}): ${errText.substring(0, 200)}`);
+            }
+
+            const result = await response.json();
+            const aiContent = result.choices?.[0]?.message?.content;
+            if (!aiContent) throw new Error(zh ? 'AI 返回为空，请重试' : 'Empty AI response, please retry');
+
+            console.log('AI raw response length:', aiContent.length);
+
+            // Extract JSON from response
+            let jsonStr = aiContent;
+            const codeBlockMatch = aiContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+            if (codeBlockMatch) {
+              jsonStr = codeBlockMatch[1].trim();
+            } else {
+              // Try to find JSON object directly
+              const jsonStart = aiContent.indexOf('{');
+              const jsonEnd = aiContent.lastIndexOf('}');
+              if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                jsonStr = aiContent.substring(jsonStart, jsonEnd + 1);
+              }
+            }
+
+            const parsed = JSON.parse(jsonStr);
+
+            // Validate structure completeness
+            if (!parsed.basics) {
+              throw new Error(zh ? 'AI 返回缺少基本信息字段' : 'AI response missing basics field');
+            }
+            if (!parsed.modules || !Array.isArray(parsed.modules)) {
+              throw new Error(zh ? 'AI 返回缺少模块字段' : 'AI response missing modules field');
+            }
+
+            // Smart merge: preserve fields AI might have skipped
+            const origBasics = preData.basics;
+            const avatar = origBasics.avatar;
+            this.data.basics = {
+              name: parsed.basics.name || origBasics.name,
+              title: parsed.basics.title || origBasics.title,
+              email: parsed.basics.email || origBasics.email,
+              phone: parsed.basics.phone || origBasics.phone,
+              location: parsed.basics.location || origBasics.location,
+              website: parsed.basics.website || origBasics.website,
+              summary: parsed.basics.summary || origBasics.summary,
+              avatar: avatar,
+            };
+
+            // Merge modules - preserve structure
+            if (parsed.modules.length > 0) {
+              this.data.modules = parsed.modules;
+            }
+
+            this.save();
+            this.renderPreview();
+            this.renderModuleList();
+            this.selectModule('basics');
+
+            // Store undo data
+            this._undoData = preData;
+
+            status.innerHTML = zh
+              ? '优化完成！请查看预览。如不满意，点击下方"撤销优化"按钮恢复。'
+              : 'Optimization complete! Review the preview. Click "Undo" to revert if needed.';
+
+            // Add undo button
+            const undoBtn = document.createElement('button');
+            undoBtn.className = 'btn-add';
+            undoBtn.style.cssText = 'margin-top:8px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;';
+            undoBtn.innerHTML = '<i class="fas fa-undo"></i> ' + (zh ? '撤销优化' : 'Undo Optimization');
+            undoBtn.onclick = () => {
+              if (this._undoData) {
+                this.data = this._undoData;
+                this._undoData = null;
+                this.save();
+                this.renderPreview();
+                this.renderModuleList();
+                this.selectModule('basics');
+                status.innerHTML = zh ? '已撤销优化，恢复原始简历。' : 'Optimization undone, original resume restored.';
+                undoBtn.remove();
+              }
+            };
+            status.appendChild(document.createElement('br'));
+            status.appendChild(undoBtn);
+
+          } catch (e) {
+            console.error('AI optimize error:', e);
+            if (e.name === 'AbortError') {
+              status.innerHTML = zh ? '请求超时（120秒），请检查网络或 API 地址。' : 'Request timed out (120s). Please check your network or API endpoint.';
+            } else if (e.message.includes('Failed to fetch') || e.message.includes('NetworkError')) {
+              status.innerHTML = zh
+                ? '网络请求失败。可能原因：<br>1. 浏览器跨域限制 — 请用本地服务器打开此文件<br>2. API 地址无法访问<br>3. 网络连接异常'
+                : 'Network request failed. Possible causes:<br>1. CORS restriction<br>2. API endpoint unreachable<br>3. Network issue';
+            } else if (e.message.includes('JSON') || e.message.includes('Unexpected token')) {
+              status.innerHTML = (zh ? 'AI 返回了无法解析的格式，请重试一次。' : 'AI returned unparseable format, please retry.') + '<br><small>' + e.message + '</small>';
+            } else {
+              status.innerHTML = (zh ? '优化失败: ' : 'Optimization failed: ') + e.message;
+            }
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-magic"></i> 开始优化';
           }
         },
       };
