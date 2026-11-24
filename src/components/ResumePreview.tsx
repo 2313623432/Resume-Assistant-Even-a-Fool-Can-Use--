@@ -39,25 +39,31 @@ export function ResumePreview({
   const visibleSections = sections.filter((s) => s.visible);
   const accent = theme.accentColor;
 
+  const isExecutive = theme.template === 'executive';
+  const isHarvard = theme.template === 'harvard';
+  const isMinimal = theme.template === 'minimal';
+  const isTech = theme.template === 'tech';
+  const isEditorial = theme.template === 'editorial';
+  const isSwiss = theme.template === 'swiss';
+  const isNordic = theme.template === 'nordic';
+  const isSlate = theme.template === 'slate';
+
   const fontStack =
-    theme.fontFamily === 'merriweather'
+    theme.fontFamily === 'merriweather' || isEditorial || isHarvard
       ? "'Merriweather', Georgia, serif"
       : theme.fontFamily === 'mono'
         ? "'JetBrains Mono', ui-monospace, monospace"
         : "'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
 
   const baseSizeClass =
-    theme.fontSize === 'sm' ? 'text-[11px]' : theme.fontSize === 'lg' ? 'text-[13.5px]' : 'text-[12.2px]';
+    theme.fontSize === 'sm'
+      ? 'text-[11px]'
+      : theme.fontSize === 'lg'
+        ? 'text-[13.5px]'
+        : 'text-[12.2px]';
 
   const sheetWidth = theme.pageSize === 'letter' ? '8.5in' : '210mm';
   const sheetMinHeight = theme.pageSize === 'letter' ? '11in' : '297mm';
-
-  const isDarkHeader = theme.template === 'slate';
-  const isTech = theme.template === 'tech';
-  const isHarvard = theme.template === 'harvard';
-  const isEditorial = theme.template === 'editorial';
-  const isSwiss = theme.template === 'swiss';
-  const isNordic = theme.template === 'nordic';
 
   const contactItems = [
     basics.location,
@@ -77,11 +83,20 @@ export function ResumePreview({
 
     if ((sec.type === 'experience' || sec.type === 'education') && sec.timelineItems?.length) {
       return (
-        <div className="space-y-3">
+        <div className={isMinimal ? 'space-y-4' : 'space-y-3'}>
           {sec.timelineItems.map((item) => {
             const bullets = splitBullets(item.description);
             return (
-              <div key={item.id}>
+              <div
+                key={item.id}
+                className={
+                  isTech
+                    ? 'border-l-2 border-slate-200 pl-3'
+                    : isNordic
+                      ? 'rounded-lg bg-slate-50/70 p-3'
+                      : ''
+                }
+              >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div>
                     <span className="font-bold text-slate-900">{item.subtitle || item.title}</span>
@@ -92,7 +107,13 @@ export function ResumePreview({
                       <span className="text-slate-500"> · {item.location}</span>
                     )}
                   </div>
-                  <span className="text-[0.9em] font-medium whitespace-nowrap text-slate-500">
+                  <span
+                    className={
+                      isTech
+                        ? 'rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] font-medium whitespace-nowrap text-slate-700'
+                        : 'text-[0.9em] font-medium whitespace-nowrap text-slate-500'
+                    }
+                  >
                     {item.date}
                   </span>
                 </div>
@@ -116,13 +137,18 @@ export function ResumePreview({
           {sec.projectItems.map((proj) => {
             const bullets = splitBullets(proj.description);
             return (
-              <div key={proj.id}>
+              <div
+                key={proj.id}
+                className={isNordic ? 'rounded-lg border border-slate-200/70 p-3' : ''}
+              >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div>
                     <span className="font-bold text-slate-900">{proj.name}</span>
                     {proj.role && <span className="text-slate-600"> · {proj.role}</span>}
                     {proj.url && (
-                      <span className="ml-1.5 text-[0.88em] text-slate-500">({proj.url})</span>
+                      <span className="ml-1.5 font-mono text-[0.85em] text-slate-500">
+                        ({proj.url})
+                      </span>
                     )}
                   </div>
                   {proj.date && (
@@ -137,9 +163,22 @@ export function ResumePreview({
                   </ul>
                 )}
                 {proj.techStack.length > 0 && (
-                  <div className="mt-1 text-[0.88em] text-slate-500">
-                    <span className="font-semibold text-slate-600">Stack:</span>{' '}
-                    {proj.techStack.join(' · ')}
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {isTech || isMinimal || isNordic ? (
+                      proj.techStack.map((tech) => (
+                        <span
+                          key={tech}
+                          className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-mono text-[0.82em] text-slate-700"
+                        >
+                          {tech}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-[0.88em] text-slate-500">
+                        <strong className="text-slate-600">Stack:</strong>{' '}
+                        {proj.techStack.join(' · ')}
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
@@ -150,6 +189,32 @@ export function ResumePreview({
     }
 
     if (sec.type === 'skills' && sec.skillGroups?.length) {
+      if (isMinimal || isTech || isNordic) {
+        return (
+          <div className="space-y-2">
+            {sec.skillGroups.map((g) => (
+              <div key={g.id}>
+                <div className="mb-1 text-[0.9em] font-semibold text-slate-800">{g.category}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {g.items.map((item) => (
+                    <span
+                      key={item}
+                      className={
+                        isTech
+                          ? 'rounded border border-slate-300 bg-white px-2 py-0.5 font-mono text-[0.85em] text-slate-800'
+                          : 'rounded-full bg-slate-100 px-2.5 py-0.5 text-[0.85em] font-medium text-slate-700'
+                      }
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      }
+
       return (
         <div className="space-y-1.5">
           {sec.skillGroups.map((g) => (
@@ -173,12 +238,9 @@ export function ResumePreview({
         </h2>
       );
     }
-    if (isEditorial) {
+    if (isMinimal) {
       return (
-        <h2
-          className="mb-2 border-b pb-1 text-[1.05em] font-bold tracking-wider uppercase"
-          style={{ color: accent, borderColor: `${accent}33` }}
-        >
+        <h2 className="mb-2.5 text-[0.88em] font-bold tracking-[0.18em] text-slate-400 uppercase">
           {title}
         </h2>
       );
@@ -186,10 +248,41 @@ export function ResumePreview({
     if (isTech) {
       return (
         <h2
-          className="mb-2 flex items-center gap-2 text-[1em] font-bold tracking-wider uppercase"
+          className="mb-2.5 flex items-center gap-2 font-mono text-[0.98em] font-bold tracking-wider uppercase"
           style={{ color: accent }}
         >
-          <span className="inline-block h-2 w-2 rounded-xs" style={{ backgroundColor: accent }} />
+          <span className="inline-block h-2.5 w-2.5 rounded-xs" style={{ backgroundColor: accent }} />
+          {`// ${title}`}
+        </h2>
+      );
+    }
+    if (isEditorial) {
+      return (
+        <h2
+          className="mb-2.5 flex items-center gap-3 text-[1.02em] font-bold tracking-[0.14em] uppercase"
+          style={{ color: accent }}
+        >
+          <span>{title}</span>
+          <span className="h-px flex-1" style={{ backgroundColor: `${accent}40` }} />
+        </h2>
+      );
+    }
+    if (isSlate) {
+      return (
+        <h2
+          className="mb-2 border-l-4 pl-2.5 text-[1em] font-extrabold tracking-wider text-slate-900 uppercase"
+          style={{ borderColor: accent }}
+        >
+          {title}
+        </h2>
+      );
+    }
+    if (isNordic) {
+      return (
+        <h2
+          className="mb-2.5 inline-block rounded-md px-2 py-0.5 text-[0.9em] font-bold tracking-wider uppercase"
+          style={{ color: accent, backgroundColor: `${accent}14` }}
+        >
           {title}
         </h2>
       );
@@ -287,6 +380,7 @@ export function ResumePreview({
         {viewMode === 'website' ? (
           <div className="mx-auto h-full min-h-[680px] max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
             <iframe
+              key={`${theme.template}-${theme.fontFamily}-${theme.accentColor}`}
               title="Live Portfolio Website Preview"
               srcDoc={websiteHtml}
               className="h-full min-h-[680px] w-full border-0"
@@ -309,29 +403,45 @@ export function ResumePreview({
               {/* Header */}
               <header
                 className={
-                  isDarkHeader
+                  isSlate
                     ? 'bg-slate-900 px-9 py-7 text-white'
                     : isHarvard
                       ? 'px-9 pt-8 pb-4 text-center'
-                      : isNordic
-                        ? 'border-b border-slate-100 bg-slate-50/70 px-9 py-7'
-                        : 'border-b border-slate-200 px-9 pt-8 pb-5'
+                      : isEditorial
+                        ? 'border-b border-stone-200 bg-stone-50/70 px-9 pt-8 pb-5 text-center'
+                        : isMinimal
+                          ? 'px-9 pt-9 pb-3'
+                          : isTech
+                            ? 'border-b border-slate-200 bg-slate-50 px-9 py-7'
+                            : isNordic
+                              ? 'm-6 mb-2 rounded-2xl border border-slate-200/80 bg-slate-50/90 px-7 py-6'
+                              : 'border-b border-slate-200 px-9 pt-8 pb-5'
                 }
                 style={
-                  !isDarkHeader && !isHarvard && !isNordic
+                  isExecutive
                     ? { borderTop: `4px solid ${accent}` }
-                    : undefined
+                    : isMinimal
+                      ? { borderLeft: `4px solid ${accent}`, marginLeft: '2.25rem', paddingLeft: '1.25rem', paddingRight: '2.25rem' }
+                      : undefined
                 }
               >
                 <div
                   className={`flex items-center gap-5 ${
-                    isHarvard ? 'justify-center text-center' : 'justify-between'
+                    isHarvard || isEditorial
+                      ? 'justify-center text-center'
+                      : isNordic
+                        ? 'flex-wrap justify-between'
+                        : 'justify-between'
                   }`}
                 >
                   <div className="flex-1">
                     <h1
                       className={`font-bold tracking-tight ${
-                        isHarvard ? 'text-[2.1em] uppercase' : 'text-[2em]'
+                        isHarvard
+                          ? 'text-[2.1em] uppercase'
+                          : isEditorial
+                            ? 'text-[2.15em] italic'
+                            : 'text-[2em]'
                       }`}
                     >
                       {basics.name}
@@ -339,15 +449,21 @@ export function ResumePreview({
                     {basics.title && (
                       <p
                         className="mt-0.5 text-[1.1em] font-semibold"
-                        style={{ color: isDarkHeader ? '#a5b4fc' : accent }}
+                        style={{
+                          color: isSlate
+                            ? '#a5b4fc'
+                            : isHarvard
+                              ? '#334155'
+                              : accent,
+                        }}
                       >
                         {basics.title}
                       </p>
                     )}
                     <div
                       className={`mt-2.5 flex flex-wrap gap-x-3 gap-y-1 text-[0.9em] ${
-                        isDarkHeader ? 'text-slate-300' : 'text-slate-600'
-                      } ${isHarvard ? 'justify-center' : ''}`}
+                        isSlate ? 'text-slate-300' : 'text-slate-600'
+                      } ${isHarvard || isEditorial ? 'justify-center' : ''}`}
                     >
                       {contactItems.map((c, idx) => (
                         <span key={`${c}-${idx}`}>
@@ -371,7 +487,7 @@ export function ResumePreview({
               {/* Body */}
               {isSwiss ? (
                 <div className="grid grid-cols-12 gap-6 px-9 py-6">
-                  <div className="col-span-4 space-y-5 border-r border-slate-200 pr-5">
+                  <div className="col-span-4 space-y-5 rounded-xl bg-slate-50/80 p-4 border-r border-slate-200">
                     {sidebarSections.map((sec) => (
                       <section key={sec.id}>
                         {renderSectionHeading(sec.title)}
@@ -389,7 +505,7 @@ export function ResumePreview({
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4.5 px-9 py-6">
+                <div className={isMinimal ? 'space-y-6 px-9 py-6' : 'space-y-4.5 px-9 py-6'}>
                   {visibleSections.map((sec) => (
                     <section key={sec.id}>
                       {renderSectionHeading(sec.title)}

@@ -22,6 +22,31 @@ const inputCls =
   'w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/15';
 const labelCls = 'mb-1 block text-xs font-semibold text-slate-600';
 
+function handleBulletKeyDown(
+  e: React.KeyboardEvent<HTMLTextAreaElement>,
+  currentValue: string,
+  onChangeValue: (next: string) => void,
+) {
+  if (
+    e.key === 'Enter' &&
+    !e.nativeEvent.isComposing &&
+    !e.shiftKey &&
+    !e.ctrlKey &&
+    !e.metaKey &&
+    !e.altKey
+  ) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
+    const nextValue = `${currentValue.slice(0, start)}\n• ${currentValue.slice(end)}`;
+    onChangeValue(nextValue);
+    requestAnimationFrame(() => {
+      target.setSelectionRange(start + 3, start + 3);
+    });
+  }
+}
+
 export function ResumeEditor({
   language,
   activeTarget,
@@ -372,12 +397,19 @@ export function ResumeEditor({
 
                 <div>
                   <label className={labelCls}>
-                    {isEn ? 'Impact Bullets (one per line)' : '工作成果要点（每行一条）'}
+                    {isEn
+                      ? 'Impact Bullets (Enter adds •)'
+                      : '工作成果要点（回车自动添加 •）'}
                   </label>
                   <textarea
                     rows={4}
                     className={inputCls}
                     value={item.description}
+                    onKeyDown={(e) =>
+                      handleBulletKeyDown(e, item.description, (val) =>
+                        updateTimelineItem(item.id, { description: val }),
+                      )
+                    }
                     onChange={(e) =>
                       updateTimelineItem(item.id, { description: e.target.value })
                     }
@@ -469,11 +501,18 @@ export function ResumeEditor({
                 </div>
 
                 <div>
-                  <label className={labelCls}>{isEn ? 'Description' : '项目描述'}</label>
+                  <label className={labelCls}>
+                    {isEn ? 'Description (Enter adds •)' : '项目描述（回车自动添加 •）'}
+                  </label>
                   <textarea
                     rows={3}
                     className={inputCls}
                     value={proj.description}
+                    onKeyDown={(e) =>
+                      handleBulletKeyDown(e, proj.description, (val) =>
+                        updateProjectItem(proj.id, { description: val }),
+                      )
+                    }
                     onChange={(e) =>
                       updateProjectItem(proj.id, { description: e.target.value })
                     }

@@ -10,35 +10,35 @@ interface SeoSectionsProps {
 
 const FAQS_EN = [
   {
-    q: 'Is ResumeCraft really 100% free with no watermarks or subscriptions?',
-    a: 'Yes. Every template, PDF export, and Resume-to-Website HTML export is completely free without accounts, subscriptions, or watermarks.',
+    q: 'How do I turn my resume into a website in one click?',
+    a: 'Edit your resume or import an existing PDF/Word file, pick any of the 8 themed portfolio styles under Design & Layout, preview it in Live Website HTML mode, and click "Turn Resume into Website" to download an animated, deploy-ready index.html or ZIP package.',
   },
   {
-    q: 'Is my resume data or AI API key sent to your servers?',
-    a: 'No. ResumeCraft runs 100% in your browser. Your resume stays in localStorage, and your BYOK AI API key communicates directly with OpenAI, DeepSeek, Google Gemini, OpenRouter, or your custom endpoint.',
+    q: 'Is ResumeCraft really a 100% free resume builder with no paywalls?',
+    a: 'Yes. You can build unlimited resumes, use all 8 templates, export ATS-clean vector PDFs, and turn your resume into a website completely free with zero accounts or watermarks.',
   },
   {
-    q: 'How do I deploy my exported resume HTML website online for free?',
-    a: 'Click "Export Website HTML" to download index.html or a ready-to-host ZIP package, then drag and drop it onto Netlify Drop (app.netlify.com/drop) or Cloudflare Pages Direct Upload for an instant HTTPS link in under 30 seconds.',
+    q: 'How does BYOK AI optimization help with AI resume search and ATS screening?',
+    a: 'Recruiters increasingly rely on AI resume search and semantic ATS ranking. Paste your target Job Description and connect your own OpenAI, DeepSeek, Google Gemini, or OpenRouter key to align skills and rewrite bullets with measurable impact while keeping your key 100% local in your browser.',
   },
   {
-    q: 'Are the PDFs exported by ResumeCraft ATS-friendly?',
-    a: 'Yes. Printing via Download PDF uses native browser vector rendering rather than rasterized screenshots, so Applicant Tracking Systems (Greenhouse, Lever, Workday) parse all text and links cleanly.',
+    q: 'Where can I host my exported resume HTML webpage for free?',
+    a: 'Drag and drop your exported folder onto Netlify Drop (app.netlify.com/drop) or Cloudflare Pages Direct Upload for an instant HTTPS website in under 30 seconds—or deploy on Vercel or GitHub Pages.',
   },
 ];
 
 const FAQS_ZH = [
   {
-    q: 'ResumeCraft 真的完全免费、没有水印或付费解锁吗？',
-    a: '是的，所有 8 套海外模板、PDF 导出以及简历一键转个人网站 HTML 均完全免费，无需注册登录。',
+    q: '如何一键把简历变成网页？',
+    a: '填写或导入你的简历后，在「模板与风格」中选择任意喜欢的样式并切换到「个人网站预览 (HTML)」，点击「一键把简历变成网页」即可导出带完整动效的独立 index.html 或建站 ZIP 包。',
   },
   {
-    q: '我填入的 API Key 和简历隐私数据安全吗？',
-    a: '完全安全。网站纯前端运行，简历内容仅保存在你的浏览器 localStorage 中；你填入的 API Key 只会直接请求你选择的 AI 服务商，不经过任何后端中转。',
+    q: 'ResumeCraft 真的可以完全免费制作简历且无水印吗？',
+    a: '是的，所有 8 套海外模板、矢量 PDF 导出以及简历转网页功能完全免费，无需注册账号，也没有任何隐藏收费。',
   },
   {
-    q: '导出的简历 HTML 怎么免费部署成公网个人网站？',
-    a: '点击右上角「导出个人网站 HTML」，下载 ZIP 包并解压后，直接把文件夹拖入 Netlify Drop (app.netlify.com/drop) 或 Cloudflare Pages，不到 30 秒即可生成免费 HTTPS 网址。',
+    q: '自带 API Key 如何提升 AI 简历搜索与 ATS 匹配度？',
+    a: '填入你自己的 OpenAI / DeepSeek / Gemini API Key 并粘贴目标岗位 JD，系统会自动提取高频关键词、按 Google XYZ 法则优化工作亮点，让简历更容易通过海外 ATS 与 AI 简历搜索筛选。',
   },
 ];
 
@@ -55,31 +55,52 @@ export function SeoSections({
     <div className="no-print border-t border-slate-200 bg-white">
       {/* Core Features */}
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-3xl text-center">
           <h2 className="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
             {isEn
-              ? 'Everything You Need to Land Interviews & Own Your Online Presence'
-              : '三大核心能力：免费做简历、自带 Key AI 优化、一键建个人主页'}
+              ? 'Free Resume Builder, AI Resume Search Optimization & One-Click Resume-to-Website'
+              : '免费制作简历 · AI 简历搜索优化 · 一键让简历变成网页'}
           </h2>
           <p className="mt-3 text-sm text-slate-600 sm:text-base">
             {isEn
-              ? 'Built for global job seekers, engineers, designers, and founders who want speed, privacy, and zero paywalls.'
-              : '专为海外求职与开发者打造，兼具排版美感、隐私安全与零门槛免费建站。'}
+              ? 'Go from a blank page or old PDF to an ATS-optimized resume and an animated live personal website in minutes.'
+              : '无论从零开始还是导入旧简历，几分钟即可同时拥有海外 ATS 简历与高颜值动效个人主页。'}
           </p>
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           <article className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Globe className="h-5 w-5" />
+            </span>
+            <h3 className="mt-4 font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">
+              {isEn ? '1. Turn Resume into Website in 1 Click' : '1. 一键让简历变成炫酷网页'}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              {isEn
+                ? 'Instantly convert your resume into a responsive, interactive HTML website with smooth animations, dark/light themes, and 8 distinct visual layouts ready for free hosting.'
+                : '一键把简历转换成自带交互动效、明暗双主题切换、8 种差异化排版的独立 HTML 网页，拿到即可免费托管上线。'}
+            </p>
+            <button
+              type="button"
+              onClick={onExportWebsite}
+              className="mt-4 text-xs font-bold text-emerald-700 hover:text-emerald-800"
+            >
+              {isEn ? 'Turn Resume into Website Now →' : '立即将简历转为网页 →'}
+            </button>
+          </article>
+
+          <article className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
               <FileText className="h-5 w-5" />
             </span>
             <h3 className="mt-4 font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">
-              {isEn ? '1. Free ATS Resume Builder' : '1. 免费海外标准简历制作'}
+              {isEn ? '2. 100% Free Resume Builder' : '2. 100% 免费制作海外标准简历'}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               {isEn
-                ? 'Choose from 8 refined US/Global templates including Harvard ATS, Executive Classic, and Silicon Valley Tech. Export crisp vector US Letter or A4 PDFs with zero watermarks.'
-                : '内置 8 套精致海外模板（含哈佛 ATS 标准、硅谷技术风等），支持 US Letter / A4 矢量 PDF 导出，完全免费无水印。'}
+                ? 'Build unlimited US Letter or A4 resumes with 8 polished templates including Harvard ATS, Swiss Grid, and Silicon Valley Tech. Export crisp vector PDFs with no watermarks.'
+                : '完全免费制作不限次数的英文/双语简历，支持 Harvard ATS、瑞士双栏等 8 套精修模板与无水印矢量 PDF 导出。'}
             </p>
           </article>
 
@@ -88,40 +109,19 @@ export function SeoSections({
               <KeyRound className="h-5 w-5" />
             </span>
             <h3 className="mt-4 font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">
-              {isEn ? '2. Private BYOK AI Tailoring' : '2. 自带 API Key 智能改简历'}
+              {isEn ? '3. AI Resume Search & ATS Tailoring' : '3. AI 简历搜索与 ATS 精准调优'}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               {isEn
-                ? 'Plug in your own OpenAI, DeepSeek, Gemini, or OpenRouter API key. Paste a Job Description to rewrite bullets using the Google XYZ formula and boost ATS keyword match.'
-                : '填入你自己的 OpenAI / DeepSeek / Gemini API Key，粘贴目标岗位 JD，AI 即刻按 Google XYZ 法则润色经历并补齐关键词。'}
+                ? 'Use your own OpenAI, DeepSeek, or Gemini API key to align your experience with target job descriptions, improve AI resume search discoverability, and keep keys private in-browser.'
+                : '填入自有 OpenAI / DeepSeek / Gemini Key，针对岗位 JD 自动补全行业关键词并量化经历，提升 AI 简历搜索与 ATS 通过率。'}
             </p>
             <button
               type="button"
               onClick={onOpenAi}
               className="mt-4 text-xs font-bold text-indigo-600 hover:text-indigo-700"
             >
-              {isEn ? 'Open AI Tailor Studio →' : '打开 AI 优化弹窗 →'}
-            </button>
-          </article>
-
-          <article className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
-              <Globe className="h-5 w-5" />
-            </span>
-            <h3 className="mt-4 font-['Plus_Jakarta_Sans'] text-lg font-bold text-slate-900">
-              {isEn ? '3. Resume-to-Website HTML' : '3. 免费把简历转为个人网站'}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              {isEn
-                ? 'Convert your resume into a responsive, dark-mode-ready standalone index.html portfolio website. Zero backend needed—host it free forever on Netlify, Cloudflare, or Vercel.'
-                : '一键将简历转换为响应式独立 HTML 网站（带暗黑模式与 SEO 标签），拿到文件即可免费托管上线。'}
-            </p>
-            <button
-              type="button"
-              onClick={onExportWebsite}
-              className="mt-4 text-xs font-bold text-emerald-700 hover:text-emerald-800"
-            >
-              {isEn ? 'Export Website & View Deploy Steps →' : '导出网站并查看部署教程 →'}
+              {isEn ? 'Optimize for AI Resume Search →' : '打开 AI 简历优化 →'}
             </button>
           </article>
         </div>
@@ -137,12 +137,12 @@ export function SeoSections({
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700">
                 <Rocket className="h-3.5 w-3.5" />
-                {isEn ? 'STEP-BY-STEP DEPLOYMENT' : '保姆级上线部署教程'}
+                {isEn ? 'ONE-CLICK RESUME TO WEBSITE GUIDE' : '一键上线个人网页教程'}
               </span>
               <h2 className="mt-3 font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-slate-900">
                 {isEn
-                  ? 'Got Your HTML File? Publish Your Resume Website Free in 30 Seconds'
-                  : '拿到简历 HTML 后，如何 30 秒免费一键部署上线？'}
+                  ? 'Turn Your Resume into a Live Website in 30 Seconds (Free Hosting)'
+                  : '拿到简历 HTML 后，30 秒免费发布成公网个人网站'}
               </h2>
             </div>
             <a
@@ -242,11 +242,11 @@ export function SeoSections({
       <footer className="border-t border-slate-200 bg-slate-50 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 text-xs text-slate-500 sm:flex-row sm:px-6">
           <div>
-            &copy; {new Date().getFullYear()} ResumeCraft &middot; Free Browser-First Resume &amp; Portfolio Studio
+            &copy; {new Date().getFullYear()} ResumeCraft &middot; Free Resume Builder &amp; One-Click Resume-to-Website Studio
           </div>
           <div className="flex flex-wrap items-center gap-5 font-medium text-slate-600">
             <a href="/deploy-guide.html" className="hover:text-indigo-600">
-              Deployment Guide
+              Turn Resume into Website Guide
             </a>
             <a href="/privacy.html" className="hover:text-indigo-600">
               Privacy Policy
