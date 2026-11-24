@@ -1139,7 +1139,7 @@ export function generatePortfolioHtml(data: ResumeData): string {
       </div>
 
       <footer class="site-footer">
-        Interactive Portfolio powered by <a href="https://resume-assistant-even-a-fool-can-us.vercel.app/" target="_blank" rel="noopener noreferrer">ResumeCraft</a>
+        Interactive Portfolio powered by <a href="https://www.cvpromax.top/" target="_blank" rel="noopener noreferrer">ResumeCraft</a>
       </footer>
     </main>
 

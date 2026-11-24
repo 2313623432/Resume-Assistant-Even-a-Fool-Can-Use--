@@ -1,21 +1,22 @@
-# ResumeCraft — Free AI Resume Builder & Resume-to-Website Generator
+# ResumeCraft — Turn Resume into Website in One Click & Free Resume Builder
 
-> Build ATS-ready resumes for free, tailor bullets to any job description using your own AI API key (BYOK), and convert your resume into a clean, deploy-ready personal website HTML in one click.
+> **Live App**: [Turn Resume into Website in One Click (cvpromax.top)](https://www.cvpromax.top/) · [Free 30-Second Hosting Guide](https://www.cvpromax.top/deploy-guide.html)
+
+Build ATS-ready resumes for free, tailor bullet points for **AI resume search** and recruiter screening using your own AI API key (BYOK), and **turn your resume into a website** with rich animations and 8 distinct visual themes in one click.
 
 ## Key Features
 
-- **100% Free & Browser-Only**: Zero accounts, zero paywalls, zero watermarks. All data persists locally in `localStorage`.
-- **Overseas & ATS-Ready Defaults**: English-first interface (`EN / 中文` switcher), US Letter / A4 formats, 8 refined Western templates (*Executive Classic*, *Harvard ATS*, *Modern Minimal*, *Silicon Valley Tech*, *Editorial Serif*, *Swiss Grid*, *Nordic Clean*, *Slate Dark Header*).
-- **Bring-Your-Own-Key (BYOK) AI Tailoring**: Supports OpenAI, DeepSeek, Google Gemini, OpenRouter, or custom OpenAI-compatible endpoints (including local Ollama). Rewrites impact bullets and tracks ATS keyword match with 1-click Undo.
-- **Resume-to-Website HTML Generator**: Instantly preview and export a standalone, dark-mode-ready `index.html` (or ZIP bundle with `README-DEPLOY.txt`) ready for free hosting on Netlify Drop, Cloudflare Pages, Vercel, or GitHub Pages.
-- **File Import & Vector PDF Export**: Import `.pdf`, `.docx`, or `.json` backups directly in the browser, and print/save crisp vector ATS-parseable PDFs.
-- **SEO & Compliance Pages**: Includes `robots.txt`, `sitemap.xml`, JSON-LD structured data, `/deploy-guide.html`, `/privacy.html`, and `/terms.html`.
+- **Turn Resume into Website in One Click**: Instantly preview and export an animated, responsive `index.html` portfolio website (or ZIP package with `README-DEPLOY.txt`) across 8 distinct themes (*Executive Aurora*, *Silicon Valley Tech Terminal*, *Slate Dark Header*, *Harvard Parchment*, *Modern Minimal*, *Editorial Magazine*, *Swiss 2-Column*, *Nordic Bento*), ready for free hosting on Netlify Drop, Cloudflare Pages, Vercel, or GitHub Pages.
+- **100% Free Resume Builder**: Zero accounts, zero paywalls, zero watermarks. All drafts save locally in `localStorage`.
+- **BYOK AI Resume Optimizer & AI Resume Search Alignment**: Plug in your own OpenAI, DeepSeek, Google Gemini, OpenRouter, or local Ollama API key to match job descriptions and boost ATS & AI resume search keyword ranking with 1-click Undo.
+- **Overseas & ATS-Ready Defaults**: English-first interface (`EN / 中文` switcher), US Letter / A4 formats, vector PDF export, `.pdf` / `.docx` / `.json` local import, and Enter-to-auto-bullet editing (`• `).
+- **SEO & Compliance Ready**: Includes `robots.txt`, `sitemap.xml`, `HowTo` + `WebApplication` + `FAQPage` JSON-LD, `/deploy-guide.html`, `/privacy.html`, and `/terms.html`.
 
 ## Tech Stack
 
 - **Frontend**: Vite, React 19, TypeScript, Tailwind CSS v4, Lucide Icons
 - **Client-side Parsers & Bundlers**: `pdfjs-dist`, `mammoth`, `jszip`
-- **Deployment**: Pure static build (`dist/`) — compatible with Vercel, Netlify, Cloudflare Pages, and GitHub Pages.
+- **Deployment**: Pure static build (`dist/`) — hosted at [https://www.cvpromax.top/](https://www.cvpromax.top/)
 
 ## Local Development
 
@@ -33,4 +34,4 @@ npm run build
 
 ---
 
-**License**: MIT · **Contact**: cjhyqf233@qq.com
+**License**: MIT · **Live Site**: [https://www.cvpromax.top/](https://www.cvpromax.top/) · **Contact**: cjhyqf233@qq.com

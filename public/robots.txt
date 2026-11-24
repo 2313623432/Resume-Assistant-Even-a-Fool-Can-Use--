@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://resume-assistant-even-a-fool-can-us.vercel.app/sitemap.xml
+Sitemap: https://www.cvpromax.top/sitemap.xml
