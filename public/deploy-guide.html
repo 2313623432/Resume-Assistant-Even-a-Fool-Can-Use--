@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Tag Manager -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+    </script>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-MB3V7PSM');</script>
+    <!-- End Google Tag Manager -->
+    <title>How to Deploy Your Resume HTML Website for Free — ResumeCraft Guide</title>
+    <meta
+      name="description"
+      content="Step-by-step guide to hosting your ResumeCraft exported index.html portfolio website online for free with Netlify Drop, Cloudflare Pages, Vercel, or GitHub Pages."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://resume-assistant-even-a-fool-can-us.vercel.app/deploy-guide.html" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --border: #e2e8f0;
+        --accent: #4f46e5;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+      }
+      header {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px;
+      }
+      .nav-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .brand { font-weight: 700; font-size: 1.05rem; color: var(--text); text-decoration: none; }
+      .cta-btn {
+        display: inline-block;
+        background: var(--accent);
+        color: #ffffff;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      main {
+        max-width: 880px;
+        margin: 40px auto;
+        padding: 0 24px;
+      }
+      .hero {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px;
+        margin-bottom: 24px;
+      }
+      h1 { margin-top: 0; font-size: 2rem; letter-spacing: -0.025em; }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 28px;
+        margin-bottom: 20px;
+      }
+      .badge {
+        display: inline-block;
+        background: #eef2ff;
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 999px;
+        margin-bottom: 10px;
+      }
+      h2 { margin: 0 0 12px; font-size: 1.25rem; }
+      p, li { color: var(--muted); }
+      ol { padding-left: 20px; margin: 0; }
+      li + li { margin-top: 8px; }
+      code {
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        color: #0f172a;
+      }
+      footer {
+        max-width: 880px;
+        margin: 32px auto 48px;
+        padding: 0 24px;
+        font-size: 0.875rem;
+        color: #64748b;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      footer a { color: #475569; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MB3V7PSM"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header>
+      <div class="nav-inner">
+        <a class="brand" href="/">ResumeCraft</a>
+        <a class="cta-btn" href="/">Open Resume Builder &rarr;</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <span class="badge">FREE STATIC HOSTING GUIDE</span>
+        <h1>How to Publish Your Resume HTML Website Online in 30 Seconds</h1>
+        <p>
+          ResumeCraft exports a single self-contained <code>index.html</code> (or ZIP bundle) with zero external build steps.
+          Choose any of the free global hosting platforms below to get a shareable HTTPS link for LinkedIn, email signatures, and recruiters.
+        </p>
+      </section>
+
+      <article class="card">
+        <span class="badge">FASTEST &bull; NO GIT REQUIRED</span>
+        <h2>1. Netlify Drop (10-Second Drag &amp; Drop)</h2>
+        <ol>
+          <li>Click <strong>Export Website (ZIP)</strong> or <strong>Export HTML</strong> in ResumeCraft and save the folder containing <code>index.html</code>.</li>
+          <li>Open <a href="https://app.netlify.com/drop" target="_blank" rel="noopener noreferrer">app.netlify.com/drop</a> in your browser.</li>
+          <li>Drag and drop your folder (or extracted ZIP folder) directly onto the upload zone.</li>
+          <li>Within 5 seconds you receive a live HTTPS URL (e.g., <code>https://your-name.netlify.app</code>) that you can customize or connect to your own domain.</li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <span class="badge">UNLIMITED BANDWIDTH</span>
+        <h2>2. Cloudflare Pages (Direct Upload)</h2>
+        <ol>
+          <li>Sign in to the <a href="https://dash.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Dashboard</a> and select <strong>Workers &amp; Pages &rarr; Create &rarr; Pages &rarr; Direct Upload</strong>.</li>
+          <li>Name your project (this becomes <code>https://your-project.pages.dev</code>).</li>
+          <li>Upload your exported <code>index.html</code> or ZIP bundle and click <strong>Deploy site</strong>.</li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <span class="badge">DEVELOPER FAVORITE</span>
+        <h2>3. Vercel (CLI or GitHub)</h2>
+        <ol>
+          <li>Place your exported <code>index.html</code> in an empty folder.</li>
+          <li>Run <code>npx vercel --prod</code> inside that folder (or push to a GitHub repository and import it on <a href="https://vercel.com/new" target="_blank" rel="noopener noreferrer">vercel.com/new</a>).</li>
+          <li>Vercel deploys your static resume site globally on HTTPS with instant preview URLs.</li>
+        </ol>
+      </article>
+
+      <article class="card">
+        <span class="badge">GITHUB PORTFOLIO</span>
+        <h2>4. GitHub Pages</h2>
+        <ol>
+          <li>Create a new GitHub repository named <code>&lt;username&gt;.github.io</code> (or any repository name).</li>
+          <li>Upload your exported <code>index.html</code> file to the repository root.</li>
+          <li>Go to <strong>Settings &rarr; Pages</strong>, select <strong>Deploy from a branch &rarr; main / (root)</strong>, and click <strong>Save</strong>.</li>
+        </ol>
+      </article>
+    </main>
+
+    <footer>
+      <a href="/">Home</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/terms.html">Terms of Service</a>
+    </footer>
+  </body>
+</html>
