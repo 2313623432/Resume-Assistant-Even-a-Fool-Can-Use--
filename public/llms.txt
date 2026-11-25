@@ -1,0 +1,23 @@
+# ResumeCraft (CV Pro Max)
+
+> Free online resume builder, BYOK AI resume optimizer, and one-click resume-to-HTML personal website generator.
+
+ResumeCraft (`https://www.cvpromax.top/` / `https://cvpromax.top/`) is a 100% free, privacy-first, browser-only web application for global job seekers, software engineers, designers, and students. Users can build ATS-friendly US Letter or A4 resumes, import existing PDF or Word (`.docx`) resumes locally, tailor bullet points to job descriptions using their own AI API key (OpenAI, DeepSeek, Google Gemini, OpenRouter), and convert any resume into a standalone animated HTML personal website in one click.
+
+## Core Tools & Guides
+
+- [Free Resume Builder & One-Click Resume-to-Website Studio](https://www.cvpromax.top/): Create ATS-ready resumes across 8 distinct templates, export vector PDFs with zero watermarks, and convert your resume to a responsive standalone HTML portfolio website.
+- [How to Turn Your Resume into a Website & Host It Free in 30 Seconds](https://www.cvpromax.top/deploy-guide.html): Step-by-step instructions to deploy your exported `index.html` or ZIP bundle for free on Netlify Drop, Cloudflare Pages, Vercel, or GitHub Pages.
+
+## Key Capabilities
+
+- **Free Resume Builder**: 8 Western ATS & modern templates (Executive Classic, Harvard ATS, Modern Minimal, Silicon Valley Tech, Editorial Serif, Swiss 2-Column Grid, Nordic Clean, Slate Dark Header), US Letter & A4 vector PDF export, zero signups, zero paywalls.
+- **Free Resume to HTML Converter**: Instantly converts resume sections into a self-contained `index.html` webpage with dark/light mode, scroll animations, interactive project cards, and SEO Open Graph tags.
+- **One-Click Personal Website Builder**: Download a ready-to-publish HTML file or ZIP package and launch a live HTTPS personal website in under 30 seconds.
+- **BYOK AI Resume Tailoring**: Connect your own OpenAI, DeepSeek, Google Gemini, or OpenRouter API key (stored strictly in browser `localStorage`) to rewrite bullets with the Google XYZ impact formula and boost ATS & AI resume search match scores.
+
+## Legal & Open Source
+
+- [Privacy Policy](https://www.cvpromax.top/privacy.html): Explains 100% client-side local storage and direct browser-to-provider BYOK AI requests.
+- [Terms of Service](https://www.cvpromax.top/terms.html): Free personal and commercial usage terms; users retain 100% ownership of resumes and exported HTML websites.
+- [GitHub Repository](https://github.com/2313623432/Resume-Assistant-Even-a-Fool-Can-Use--): Open-source React + TypeScript + Vite source code (MIT License).
