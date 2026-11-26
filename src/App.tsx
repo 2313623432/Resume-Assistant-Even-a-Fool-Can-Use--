@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2, Eye, PenLine } from 'lucide-react';
+import { CheckCircle2, ExternalLink, Eye, PenLine, RotateCcw, Sparkles } from 'lucide-react';
 import { AITailorModal } from './components/AITailorModal';
 import { DeployGuideModal } from './components/DeployGuideModal';
 import { HeroBanner } from './components/HeroBanner';
@@ -10,6 +10,7 @@ import { ResumePreview } from './components/ResumePreview';
 import { SeoSections } from './components/SeoSections';
 import { Sidebar } from './components/Sidebar';
 import { DEFAULT_AI_CONFIG, DEFAULT_RESUME_DATA } from './data/defaultResume';
+import { ROLE_PRESETS, type RolePreset } from './data/rolePresets';
 import type {
   AIConfig,
   AITailorResult,
@@ -24,13 +25,26 @@ import { applyTailorResult } from './utils/aiOptimizer';
 const STORAGE_DATA_KEY = 'resumecraft_v2_data';
 const STORAGE_AI_KEY = 'resumecraft_v2_ai';
 
-function loadInitialResume(): ResumeData {
+function getInitialQueryParams(): { preset: RolePreset | null; isEmbed: boolean } {
+  if (typeof window === 'undefined') {
+    return { preset: null, isEmbed: false };
+  }
+  const params = new URLSearchParams(window.location.search);
+  const presetKey = params.get('preset') ?? '';
+  const isEmbed = params.get('embed') === '1';
+  return {
+    preset: presetKey && ROLE_PRESETS[presetKey] ? ROLE_PRESETS[presetKey] : null,
+    isEmbed,
+  };
+}
+
+function loadSavedDraftOrNull(): ResumeData | null {
   try {
     const raw = localStorage.getItem(STORAGE_DATA_KEY);
-    if (!raw) return DEFAULT_RESUME_DATA;
+    if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<ResumeData>;
     if (!parsed.basics || !Array.isArray(parsed.sections)) {
-      return DEFAULT_RESUME_DATA;
+      return null;
     }
     return {
       ...DEFAULT_RESUME_DATA,
@@ -40,7 +54,7 @@ function loadInitialResume(): ResumeData {
       sections: parsed.sections,
     };
   } catch {
-    return DEFAULT_RESUME_DATA;
+    return null;
   }
 }
 
@@ -55,10 +69,19 @@ function loadInitialAiConfig(): AIConfig {
 }
 
 export default function App() {
-  const [resume, setResume] = useState<ResumeData>(loadInitialResume);
+  const [{ preset: initialPreset, isEmbed }] = useState(getInitialQueryParams);
+  const [previousDraft, setPreviousDraft] = useState<ResumeData | null>(() =>
+    initialPreset ? loadSavedDraftOrNull() : null,
+  );
+  const [activePreset, setActivePreset] = useState<RolePreset | null>(initialPreset);
+  const [dirtyFromPreset, setDirtyFromPreset] = useState(false);
+
+  const [resume, setResume] = useState<ResumeData>(() =>
+    initialPreset ? initialPreset.data : loadSavedDraftOrNull() ?? DEFAULT_RESUME_DATA,
+  );
   const [aiConfig, setAiConfig] = useState<AIConfig>(loadInitialAiConfig);
   const [activeTarget, setActiveTarget] = useState<'basics' | string>('basics');
-  const [showHero, setShowHero] = useState(true);
+  const [showHero, setShowHero] = useState(!isEmbed && !initialPreset);
   const [mobilePane, setMobilePane] = useState<'edit' | 'preview'>('edit');
 
   const [aiModalOpen, setAiModalOpen] = useState(false);
@@ -69,12 +92,14 @@ export default function App() {
   const [toast, setToast] = useState<string>('');
 
   useEffect(() => {
+    // Protect returning users' saved resumes when merely viewing a preset or embedded iframe.
+    if (activePreset && !dirtyFromPreset) return;
     try {
       localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(resume));
     } catch {
       // Ignore quota errors
     }
-  }, [resume]);
+  }, [resume, activePreset, dirtyFromPreset]);
 
   useEffect(() => {
     try {
@@ -91,36 +116,54 @@ export default function App() {
     }, 3000);
   };
 
+  const updateResume = (updater: (prev: ResumeData) => ResumeData) => {
+    setDirtyFromPreset(true);
+    setResume(updater);
+  };
+
+  const handleRestorePreviousDraft = () => {
+    if (!previousDraft) return;
+    setResume(previousDraft);
+    setPreviousDraft(null);
+    setActivePreset(null);
+    setDirtyFromPreset(true);
+    notify(
+      resume.language === 'en'
+        ? 'Restored your previous local resume draft.'
+        : '已恢复你之前保存的本地简历草稿。',
+    );
+  };
+
   const handleToggleLanguage = () => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       language: prev.language === 'en' ? 'zh' : 'en',
     }));
   };
 
   const handleUpdateBasics = (patch: Partial<BasicInfo>) => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       basics: { ...prev.basics, ...patch },
     }));
   };
 
   const handleUpdateTheme = (patch: Partial<ThemeConfig>) => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       theme: { ...prev.theme, ...patch },
     }));
   };
 
   const handleUpdateSection = (id: string, patch: Partial<ResumeSection>) => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       sections: prev.sections.map((s) => (s.id === id ? { ...s, ...patch } : s)),
     }));
   };
 
   const handleReorderSections = (fromIndex: number, toIndex: number) => {
-    setResume((prev) => {
+    updateResume((prev) => {
       const next = [...prev.sections];
       const [moved] = next.splice(fromIndex, 1);
       next.splice(toIndex, 0, moved);
@@ -129,7 +172,7 @@ export default function App() {
   };
 
   const handleToggleVisibility = (id: string) => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       sections: prev.sections.map((s) =>
         s.id === id ? { ...s, visible: !s.visible } : s,
@@ -138,7 +181,7 @@ export default function App() {
   };
 
   const handleDeleteSection = (id: string) => {
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       sections: prev.sections.filter((s) => s.id !== id),
     }));
@@ -197,7 +240,7 @@ export default function App() {
         : {}),
     };
 
-    setResume((prev) => ({
+    updateResume((prev) => ({
       ...prev,
       sections: [...prev.sections, created],
     }));
@@ -206,7 +249,7 @@ export default function App() {
 
   const handleApplyAiResult = (result: AITailorResult) => {
     setAiHistory(resume);
-    setResume((prev) => applyTailorResult(prev, result));
+    updateResume((prev) => applyTailorResult(prev, result));
     notify(
       resume.language === 'en'
         ? 'AI tailored suggestions applied! You can undo anytime.'
@@ -216,6 +259,7 @@ export default function App() {
 
   const handleUndoAi = () => {
     if (!aiHistory) return;
+    setDirtyFromPreset(true);
     setResume(aiHistory);
     setAiHistory(null);
     notify(resume.language === 'en' ? 'Reverted previous AI edit.' : '已撤销上次 AI 修改。');
@@ -240,7 +284,53 @@ export default function App() {
         onOpenDeployGuide={() => setDeployModalOpen(true)}
       />
 
-      {showHero && (
+      {activePreset && (
+        <div className="no-print border-b border-indigo-200/80 bg-indigo-50/90 px-4 py-2 text-xs">
+          <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center gap-2 text-indigo-950">
+              <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+              <span className="font-bold">
+                {resume.language === 'en'
+                  ? `Free ${activePreset.label} Template Loaded`
+                  : `已加载免费「${activePreset.label}」行业模板`}
+              </span>
+              <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-200">
+                {activePreset.badge}
+              </span>
+              <span className="hidden text-indigo-700/80 sm:inline">
+                {resume.language === 'en'
+                  ? '· Edit freely, export vector PDF, or click Turn Resume into Website.'
+                  : '· 可直接修改、免费导出 PDF，或点击「一键把简历变成网页」。'}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {previousDraft && (
+                <button
+                  type="button"
+                  onClick={handleRestorePreviousDraft}
+                  className="inline-flex items-center gap-1 rounded-lg border border-indigo-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-indigo-800 hover:bg-indigo-100"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  {resume.language === 'en' ? 'Restore My Draft' : '恢复我之前的草稿'}
+                </button>
+              )}
+              {isEmbed && (
+                <a
+                  href={`/?preset=${encodeURIComponent(activePreset.slug)}`}
+                  target="_top"
+                  className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-indigo-700"
+                >
+                  <span>{resume.language === 'en' ? 'Open Full-Screen' : '全屏打开'}</span>
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showHero && !isEmbed && (
         <HeroBanner
           language={resume.language}
           onDismiss={() => setShowHero(false)}
@@ -323,11 +413,13 @@ export default function App() {
         </div>
       </main>
 
-      <SeoSections
-        language={resume.language}
-        onOpenAi={() => setAiModalOpen(true)}
-        onExportWebsite={() => setDeployModalOpen(true)}
-      />
+      {!isEmbed && (
+        <SeoSections
+          language={resume.language}
+          onOpenAi={() => setAiModalOpen(true)}
+          onExportWebsite={() => setDeployModalOpen(true)}
+        />
+      )}
 
       {/* Modals */}
       <AITailorModal
@@ -355,6 +447,7 @@ export default function App() {
         resume={resume}
         onClose={() => setImportModalOpen(false)}
         onImported={(next) => {
+          setDirtyFromPreset(true);
           setResume(next);
           notify(
             resume.language === 'en'
@@ -363,6 +456,9 @@ export default function App() {
           );
         }}
         onResetSample={() => {
+          setActivePreset(null);
+          setPreviousDraft(null);
+          setDirtyFromPreset(true);
           setResume(DEFAULT_RESUME_DATA);
           setAiHistory(null);
           notify(

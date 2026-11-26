@@ -202,6 +202,54 @@ export function SeoSections({
         </div>
       </section>
 
+      {/* 2026 Industry Guides & Free Resume-to-Website Hub */}
+      <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+              {isEn ? '2026 ROLE PLAYBOOKS · 20 INDUSTRIES' : '2026 细分行业模板与建站指南 · 20 个专栏'}
+            </span>
+            <h2 className="mt-3 font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-slate-900">
+              {isEn
+                ? 'Free Resume Builder & One-Click Resume-to-Website Guides by Role'
+                : '按行业免费制作简历 & 一键把简历变成个人网站'}
+            </h2>
+          </div>
+          <a
+            href="/resume-to-website-guides.html"
+            className="text-sm font-semibold text-indigo-600 hover:underline"
+          >
+            {isEn ? 'Browse all 20 industry guides →' : '查看全部 20 个行业指南 →'}
+          </a>
+        </div>
+
+        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            { href: '/software-engineer-resume-website.html', title: 'Software Engineer', tag: 'Tech Terminal' },
+            { href: '/frontend-developer-resume-website.html', title: 'Frontend Developer', tag: 'Aurora Glass' },
+            { href: '/data-scientist-resume-website.html', title: 'Data Scientist & ML', tag: 'Tech Terminal' },
+            { href: '/product-manager-resume-website.html', title: 'Product Manager', tag: 'Aurora Glass' },
+            { href: '/ux-designer-resume-website.html', title: 'UX / Product Designer', tag: 'Nordic Bento' },
+            { href: '/digital-marketing-resume-website.html', title: 'Digital Marketing', tag: 'Nordic Bento' },
+            { href: '/seo-specialist-resume-website.html', title: 'SEO & GEO Specialist', tag: 'Minimal Studio' },
+            { href: '/academic-cv-to-website.html', title: 'Academic & PhD CV', tag: 'Harvard Ivory' },
+            { href: '/cs-student-resume-website.html', title: 'CS Student & New Grad', tag: 'Tech Terminal' },
+            { href: '/freelancer-resume-website.html', title: 'Freelancer & Indie', tag: 'Swiss 2-Col' },
+          ].map((g) => (
+            <a
+              key={g.href}
+              href={g.href}
+              className="group rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 transition hover:border-indigo-300 hover:bg-indigo-50/40"
+            >
+              <div className="text-[11px] font-semibold text-indigo-600">{g.tag}</div>
+              <div className="mt-0.5 text-sm font-bold text-slate-900 group-hover:text-indigo-700">
+                {g.title} &rarr;
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
         <h2 className="text-center font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-slate-900">
@@ -245,6 +293,9 @@ export function SeoSections({
             &copy; {new Date().getFullYear()} ResumeCraft &middot; Free Resume Builder &amp; One-Click Resume-to-Website Studio
           </div>
           <div className="flex flex-wrap items-center gap-5 font-medium text-slate-600">
+            <a href="/resume-to-website-guides.html" className="hover:text-indigo-600">
+              Industry Guides (20 Roles)
+            </a>
             <a href="/deploy-guide.html" className="hover:text-indigo-600">
               Turn Resume into Website Guide
             </a>
