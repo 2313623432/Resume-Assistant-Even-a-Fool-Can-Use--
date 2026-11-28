@@ -1,14 +1,21 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { CheckCircle2, ExternalLink, Eye, PenLine, RotateCcw, Sparkles } from 'lucide-react';
-import { AITailorModal } from './components/AITailorModal';
-import { DeployGuideModal } from './components/DeployGuideModal';
 import { HeroBanner } from './components/HeroBanner';
-import { ImportModal } from './components/ImportModal';
 import { Navbar } from './components/Navbar';
 import { ResumeEditor } from './components/ResumeEditor';
 import { ResumePreview } from './components/ResumePreview';
 import { SeoSections } from './components/SeoSections';
 import { Sidebar } from './components/Sidebar';
+
+const AITailorModal = lazy(() =>
+  import('./components/AITailorModal').then((m) => ({ default: m.AITailorModal })),
+);
+const DeployGuideModal = lazy(() =>
+  import('./components/DeployGuideModal').then((m) => ({ default: m.DeployGuideModal })),
+);
+const ImportModal = lazy(() =>
+  import('./components/ImportModal').then((m) => ({ default: m.ImportModal })),
+);
 import { DEFAULT_AI_CONFIG, DEFAULT_RESUME_DATA } from './data/defaultResume';
 import { ROLE_PRESETS, type RolePreset } from './data/rolePresets';
 import type {
@@ -421,53 +428,61 @@ export default function App() {
         />
       )}
 
-      {/* Modals */}
-      <AITailorModal
-        isOpen={aiModalOpen}
-        language={resume.language}
-        resume={resume}
-        aiConfig={aiConfig}
-        canUndo={aiHistory !== null}
-        onClose={() => setAiModalOpen(false)}
-        onUpdateAiConfig={setAiConfig}
-        onApplyResult={handleApplyAiResult}
-        onUndo={handleUndoAi}
-      />
+      {/* Modals (lazy-loaded only when opened so initial paint stays fast) */}
+      <Suspense fallback={null}>
+        {aiModalOpen && (
+          <AITailorModal
+            isOpen={aiModalOpen}
+            language={resume.language}
+            resume={resume}
+            aiConfig={aiConfig}
+            canUndo={aiHistory !== null}
+            onClose={() => setAiModalOpen(false)}
+            onUpdateAiConfig={setAiConfig}
+            onApplyResult={handleApplyAiResult}
+            onUndo={handleUndoAi}
+          />
+        )}
 
-      <DeployGuideModal
-        isOpen={deployModalOpen}
-        language={resume.language}
-        resume={resume}
-        onClose={() => setDeployModalOpen(false)}
-      />
+        {deployModalOpen && (
+          <DeployGuideModal
+            isOpen={deployModalOpen}
+            language={resume.language}
+            resume={resume}
+            onClose={() => setDeployModalOpen(false)}
+          />
+        )}
 
-      <ImportModal
-        isOpen={importModalOpen}
-        language={resume.language}
-        resume={resume}
-        onClose={() => setImportModalOpen(false)}
-        onImported={(next) => {
-          setDirtyFromPreset(true);
-          setResume(next);
-          notify(
-            resume.language === 'en'
-              ? 'Resume imported locally!'
-              : '简历已成功导入到本地！',
-          );
-        }}
-        onResetSample={() => {
-          setActivePreset(null);
-          setPreviousDraft(null);
-          setDirtyFromPreset(true);
-          setResume(DEFAULT_RESUME_DATA);
-          setAiHistory(null);
-          notify(
-            resume.language === 'en'
-              ? 'Reset to overseas sample resume (Alex Morgan).'
-              : '已恢复默认海外英文示例简历。',
-          );
-        }}
-      />
+        {importModalOpen && (
+          <ImportModal
+            isOpen={importModalOpen}
+            language={resume.language}
+            resume={resume}
+            onClose={() => setImportModalOpen(false)}
+            onImported={(next) => {
+              setDirtyFromPreset(true);
+              setResume(next);
+              notify(
+                resume.language === 'en'
+                  ? 'Resume imported locally!'
+                  : '简历已成功导入到本地！',
+              );
+            }}
+            onResetSample={() => {
+              setActivePreset(null);
+              setPreviousDraft(null);
+              setDirtyFromPreset(true);
+              setResume(DEFAULT_RESUME_DATA);
+              setAiHistory(null);
+              notify(
+                resume.language === 'en'
+                  ? 'Reset to overseas sample resume (Alex Morgan).'
+                  : '已恢复默认海外英文示例简历。',
+              );
+            }}
+          />
+        )}
+      </Suspense>
 
       {/* Toast */}
       {toast && (

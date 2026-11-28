@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BASE_URL, LANDING_PAGES, TODAY } from './landing-pages-data.mjs';
+import { BASE_URL, HIGH_INTENT_PAGES, LANDING_PAGES, TODAY } from './landing-pages-data.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
@@ -307,6 +307,17 @@ const SHARED_CSS = `      :root {
       }`;
 
 const pageBySlug = new Map(LANDING_PAGES.map((p) => [p.slug, p]));
+const highIntentBySlug = new Map(HIGH_INTENT_PAGES.map((p) => [p.slug, p]));
+
+const ORG_JSON_LD = {
+  '@type': 'Organization',
+  '@id': `${BASE_URL}/#organization`,
+  name: 'ResumeCraft',
+  alternateName: 'CV Pro Max',
+  url: `${BASE_URL}/`,
+  logo: `${BASE_URL}/logo.png`,
+  sameAs: ['https://github.com/2313623432/Resume-Assistant-Even-a-Fool-Can-Use--'],
+};
 
 function renderRolePage(page) {
   const canonicalUrl = `${BASE_URL}/${page.slug}.html`;
@@ -316,6 +327,7 @@ function renderRolePage(page) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      ORG_JSON_LD,
       {
         '@type': 'Article',
         headline: page.h1,
@@ -324,12 +336,8 @@ function renderRolePage(page) {
         dateModified: TODAY,
         mainEntityOfPage: canonicalUrl,
         image: `${BASE_URL}/og-image.png`,
-        author: { '@type': 'Organization', name: 'ResumeCraft' },
-        publisher: {
-          '@type': 'Organization',
-          name: 'ResumeCraft',
-          logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo.png` },
-        },
+        author: { '@id': `${BASE_URL}/#organization` },
+        publisher: { '@id': `${BASE_URL}/#organization` },
       },
       {
         '@type': 'HowTo',
@@ -581,6 +589,254 @@ ${GTM_NOSCRIPT}
 `;
 }
 
+function renderHighIntentPage(page) {
+  const canonicalUrl = `${BASE_URL}/${page.slug}.html`;
+  const fullStudioUrl = `/?preset=${encodeURIComponent(page.presetKey)}`;
+  const embedStudioUrl = `/?preset=${encodeURIComponent(page.presetKey)}&embed=1`;
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ORG_JSON_LD,
+      {
+        '@type': 'Article',
+        headline: page.h1,
+        description: page.description,
+        datePublished: TODAY,
+        dateModified: TODAY,
+        mainEntityOfPage: canonicalUrl,
+        image: `${BASE_URL}/og-image.png`,
+        author: { '@id': `${BASE_URL}/#organization` },
+        publisher: { '@id': `${BASE_URL}/#organization` },
+      },
+      {
+        '@type': 'HowTo',
+        name: page.howToName,
+        description: page.description,
+        step: page.howToSteps.map((s) => ({
+          '@type': 'HowToStep',
+          name: s.name,
+          text: s.text,
+        })),
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: page.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE_URL}/` },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Free Resume Guides & Alternatives',
+            item: `${BASE_URL}/resume-to-website-guides.html`,
+          },
+          { '@type': 'ListItem', position: 3, name: page.shortLabel, item: canonicalUrl },
+        ],
+      },
+    ],
+  };
+
+  const highlightsHtml = page.highlights
+    .map(
+      (h, idx) => `
+          <div class="truth-card">
+            <h3>${idx + 1}. ${esc(h.title)}</h3>
+            <p>${esc(h.body)}</p>
+          </div>`,
+    )
+    .join('');
+
+  const headersHtml = page.comparisonHeaders.map((h) => `<th>${esc(h)}</th>`).join('');
+  const rowsHtml = page.comparisonRows
+    .map(
+      (row) => `
+          <tr>
+            ${row
+              .map((cell, idx) =>
+                idx === 1
+                  ? `<td class="good-cell">${esc(cell)}</td>`
+                  : `<td>${esc(cell)}</td>`,
+              )
+              .join('')}
+          </tr>`,
+    )
+    .join('');
+
+  const relatedHighHtml = (page.relatedHighIntent ?? [])
+    .map((slug) => highIntentBySlug.get(slug))
+    .filter(Boolean)
+    .map(
+      (rel) => `
+          <a class="related-card" href="/${esc(rel.slug)}.html">
+            <span>Free Tool / Alternative</span>
+            ${esc(rel.shortLabel)} &rarr;
+          </a>`,
+    )
+    .join('');
+
+  const relatedRoleHtml = (page.relatedRoles ?? [])
+    .map((slug) => pageBySlug.get(slug))
+    .filter(Boolean)
+    .map(
+      (rel) => `
+          <a class="related-card" href="/${esc(rel.slug)}.html">
+            <span>${esc(rel.cluster)}</span>
+            ${esc(rel.roleName)} Resume &amp; Website &rarr;
+          </a>`,
+    )
+    .join('');
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+${GTM_HEAD}
+    <title>${esc(page.title)}</title>
+    <meta name="description" content="${esc(page.description)}" />
+    <meta name="keywords" content="${esc(page.keywords)}" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="${esc(canonicalUrl)}" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="ResumeCraft" />
+    <meta property="og:title" content="${esc(page.title)}" />
+    <meta property="og:description" content="${esc(page.description)}" />
+    <meta property="og:url" content="${esc(canonicalUrl)}" />
+    <meta property="og:image" content="${BASE_URL}/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(page.title)}" />
+    <meta name="twitter:description" content="${esc(page.description)}" />
+    <meta name="twitter:image" content="${BASE_URL}/og-image.png" />
+    <script type="application/ld+json">
+${safeJsonLd(jsonLd)}
+    </script>
+    <style>
+${SHARED_CSS}
+    </style>
+  </head>
+  <body>
+${GTM_NOSCRIPT}
+    <header class="site-header">
+      <div class="nav-inner">
+        <a class="brand" href="/">
+          <span class="brand-dot">RC</span>
+          <span>ResumeCraft</span>
+        </a>
+        <nav class="nav-links" aria-label="Navigation">
+          <a href="/">Free Resume Builder</a>
+          <a href="/resume-to-website-guides.html">All Guides &amp; Alternatives</a>
+          <a href="/deploy-guide.html">Free Hosting Guide</a>
+          <a class="btn btn-primary" href="${esc(fullStudioUrl)}">Open Full Builder &rarr;</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="crumbs">
+        <a href="/">Home</a> &rsaquo; <a href="/resume-to-website-guides.html">Guides &amp; Alternatives</a> &rsaquo; ${esc(page.shortLabel)}
+      </div>
+
+      <section class="hero-box">
+        <span class="badge">${esc(page.badge)}</span>
+        <h1>${esc(page.h1)}</h1>
+        <p class="hero-desc">${esc(page.description)}</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#live-studio">Use Free Builder Below &darr;</a>
+          <a class="btn btn-dark" href="${esc(fullStudioUrl)}">Open Full-Screen Studio &rarr;</a>
+          <a class="btn btn-outline" href="/deploy-guide.html">30s Free Hosting Guide</a>
+        </div>
+      </section>
+
+      <section class="card tldr-box" aria-label="Direct Summary">
+        <h2>Quick Answer (2026): ${esc(page.shortLabel)}</h2>
+        <p>${esc(page.directAnswer)}</p>
+      </section>
+
+      <section class="card">
+        <h2>${esc(page.comparisonTitle)}</h2>
+        <table class="roast-table">
+          <thead>
+            <tr>${headersHtml}</tr>
+          </thead>
+          <tbody>${rowsHtml}
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Why Job Seekers Switch to ResumeCraft (cvpromax.top)</h2>
+        <div class="truth-grid">${highlightsHtml}
+        </div>
+      </section>
+
+      <section id="live-studio" class="card">
+        <h2>Try It Free Now — No Sign Up, No Credit Card, No Watermark</h2>
+        <p>
+          Edit directly below or import your existing PDF / Word (.docx) file locally inside your browser. Export a clean ATS vector PDF or click
+          <strong>Turn Resume into Website</strong> to download a standalone <code>index.html</code> portfolio.
+        </p>
+        <div class="studio-shell">
+          <div class="studio-topbar">
+            <span>Template: <strong>${esc(page.themeLabel)}</strong> &middot; 100% Free &amp; Local in Browser</span>
+            <a class="btn btn-primary" style="padding:6px 12px;font-size:0.78rem;" href="${esc(fullStudioUrl)}">Open Full-Screen Studio &nearr;</a>
+          </div>
+          <iframe
+            class="studio-frame"
+            src="${esc(embedStudioUrl)}"
+            title="${esc(page.shortLabel)} Interactive Builder"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Frequently Asked Questions (${esc(page.shortLabel)} &middot; 2026)</h2>
+        ${page.faqs
+          .map(
+            (f) => `
+        <div class="faq-item">
+          <h3>${esc(f.q)}</h3>
+          <p>${esc(f.a)}</p>
+        </div>`,
+          )
+          .join('')}
+      </section>
+
+      <section class="card">
+        <h2>Related Free Tools &amp; 2026 Role Templates</h2>
+        <div class="related-grid">${relatedHighHtml}${relatedRoleHtml}
+        </div>
+        <p style="margin-top:16px;">
+          <a href="/resume-to-website-guides.html">View all 30 free guides, alternatives &amp; industry templates &rarr;</a>
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>&copy; 2026 ResumeCraft &middot; Free Resume Builder &amp; One-Click Resume-to-Website Studio</div>
+        <div class="footer-links">
+          <a href="/">Home</a>
+          <a href="/resume-to-website-guides.html">All Guides &amp; Alternatives</a>
+          <a href="/deploy-guide.html">Free Hosting Guide</a>
+          <a href="/privacy.html">Privacy Policy</a>
+          <a href="/terms.html">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+`;
+}
+
 function renderHubPage() {
   const canonicalUrl = `${BASE_URL}/resume-to-website-guides.html`;
   const clusters = [];
@@ -594,28 +850,50 @@ function renderHubPage() {
     seen.get(p.cluster).items.push(p);
   }
 
+  const allGuides = [...HIGH_INTENT_PAGES, ...LANDING_PAGES];
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      ORG_JSON_LD,
       {
         '@type': 'CollectionPage',
-        name: '2026 Free Resume Builder & Turn Resume into Website Industry Guides — ResumeCraft',
+        name: 'Free Resume Builder Alternatives, Harvard ATS & 20 Industry Guides (2026) — ResumeCraft',
         url: canonicalUrl,
         description:
-          'Browse 20 role-specific 2026 guides on how to build a free ATS resume, tailor bullets with your own AI API key, and turn your resume into an animated personal website in one click.',
+          'Explore 20 industry resume guides plus 10 free Zety/Resume.io/Canva alternatives, Harvard ATS templates & PDF-to-HTML converters—no signup or paywalls.',
         dateModified: TODAY,
+        publisher: { '@id': `${BASE_URL}/#organization` },
       },
       {
         '@type': 'ItemList',
-        itemListElement: LANDING_PAGES.map((p, idx) => ({
+        itemListElement: allGuides.map((p, idx) => ({
           '@type': 'ListItem',
           position: idx + 1,
-          name: `${p.roleName} Free Resume Builder & Website Guide`,
+          name: p.shortLabel ? p.title : `${p.roleName} Free Resume Builder & Website Guide`,
           url: `${BASE_URL}/${p.slug}.html`,
         })),
       },
     ],
   };
+
+  const highIntentSection = `
+      <section class="card">
+        <h2>Free Alternatives, Harvard ATS Template &amp; PDF-to-Website Converters (No Paywall)</h2>
+        <div class="truth-grid">
+          ${HIGH_INTENT_PAGES.map(
+            (p) => `
+          <div class="truth-card">
+            <span class="badge" style="margin-bottom:8px;">${esc(p.themeLabel)}</span>
+            <h3><a href="/${esc(p.slug)}.html">${esc(p.shortLabel)}</a></h3>
+            <p style="font-size:0.88rem;margin-bottom:12px;">${esc(p.description)}</p>
+            <div class="cta-row">
+              <a class="btn btn-primary" style="padding:7px 12px;font-size:0.78rem;" href="/${esc(p.slug)}.html">Compare &amp; Open &rarr;</a>
+              <a class="btn btn-outline" style="padding:7px 12px;font-size:0.78rem;" href="/?preset=${esc(p.presetKey)}">Load Template</a>
+            </div>
+          </div>`,
+          ).join('')}
+        </div>
+      </section>`;
 
   const clusterSections = clusters
     .map(
@@ -648,16 +926,16 @@ function renderHubPage() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 ${GTM_HEAD}
-    <title>20 Industry Free Resume Builders &amp; Resume-to-Website Guides (2026) — ResumeCraft</title>
+    <title>30 Free Resume Guides, Alternatives &amp; Website Converters (2026) — ResumeCraft</title>
     <meta
       name="description"
-      content="Explore 20 specialized 2026 resume guides and free templates across engineering, product, design, marketing, finance, academia, and remote roles—each with a one-click Resume-to-Website HTML generator."
+      content="Explore 20 industry resume guides plus 10 free Zety/Resume.io/Canva alternatives, Harvard ATS templates &amp; PDF-to-HTML converters—no signup or paywalls."
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="${esc(canonicalUrl)}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="20 Industry Free Resume Builders &amp; Resume-to-Website Guides (2026)" />
+    <meta property="og:title" content="30 Free Resume Guides, Alternatives &amp; Website Converters (2026)" />
     <meta property="og:url" content="${esc(canonicalUrl)}" />
     <meta property="og:image" content="${BASE_URL}/og-image.png" />
     <script type="application/ld+json">
@@ -685,16 +963,18 @@ ${GTM_NOSCRIPT}
 
     <main class="container">
       <section class="hero-box">
-        <span class="badge">2026 DIRECTORY &middot; 20 VERTICAL PLAYBOOKS</span>
-        <h1>Free Resume Builder &amp; One-Click Resume-to-Website Guides by Role (2026)</h1>
+        <span class="badge">2026 DIRECTORY &middot; 10 FREE ALTERNATIVES + 20 ROLE PLAYBOOKS</span>
+        <h1>Free Resume Builder Alternatives, Harvard ATS &amp; 20 Industry Guides (2026)</h1>
         <p class="hero-desc">
-          Pick your profession below to read sharp, honest 2026 hiring advice, preview an ATS-ready template, and turn your resume into an animated HTML personal website in one click—100% free in your browser.
+          Compare zero-paywall resume builders, convert a LinkedIn or Canva PDF into an ATS resume and personal website, or pick your profession below to edit free in your browser.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="/">Start with Blank / Default Studio &rarr;</a>
           <a class="btn btn-outline" href="/deploy-guide.html">30s Free Hosting Guide</a>
         </div>
       </section>
+
+${highIntentSection}
 
 ${clusterSections}
     </main>
@@ -720,6 +1000,11 @@ function renderSitemap() {
     { loc: `${BASE_URL}/`, changefreq: 'weekly', priority: '1.0' },
     { loc: `${BASE_URL}/resume-to-website-guides.html`, changefreq: 'weekly', priority: '0.9' },
     { loc: `${BASE_URL}/deploy-guide.html`, changefreq: 'monthly', priority: '0.9' },
+    ...HIGH_INTENT_PAGES.map((p) => ({
+      loc: `${BASE_URL}/${p.slug}.html`,
+      changefreq: 'weekly',
+      priority: '0.9',
+    })),
     ...LANDING_PAGES.map((p) => ({
       loc: `${BASE_URL}/${p.slug}.html`,
       changefreq: 'monthly',
@@ -749,6 +1034,10 @@ ${entries}
 }
 
 function renderLlmsTxt() {
+  const highIntentLines = HIGH_INTENT_PAGES.map(
+    (p) => `- [${p.title}](${BASE_URL}/${p.slug}.html): ${p.description}`,
+  ).join('\n');
+
   const guideLines = LANDING_PAGES.map(
     (p) =>
       `- [${p.roleName} Resume Builder & Website Guide (2026)](${BASE_URL}/${p.slug}.html): ${p.description}`,
@@ -758,13 +1047,17 @@ function renderLlmsTxt() {
 
 > Free online resume builder, BYOK AI resume optimizer, and one-click resume-to-HTML personal website generator.
 
-ResumeCraft (\`${BASE_URL}/\` / \`https://cvpromax.top/\`) is a 100% free, privacy-first, browser-only web application for global job seekers, software engineers, designers, marketers, researchers, and students. Users can build ATS-friendly US Letter or A4 resumes, import existing PDF or Word (\`.docx\`) resumes locally, tailor bullet points to job descriptions using their own AI API key (OpenAI, DeepSeek, Google Gemini, OpenRouter), and convert any resume into a standalone animated HTML personal website in one click.
+ResumeCraft (hosted exclusively at \`${BASE_URL}/\` — unrelated to third-party domains such as \`cvpromax.com\`) is a 100% free, privacy-first, open-source, browser-only web application for global job seekers, software engineers, designers, marketers, researchers, and students. Users can build ATS-friendly US Letter or A4 resumes with zero account signup or download paywalls, import existing PDF or Word (\`.docx\`) resumes locally, tailor bullet points to job descriptions using their own AI API key (OpenAI, DeepSeek, Google Gemini, OpenRouter, or local Ollama), and convert any resume into a standalone animated HTML personal website in one click.
 
 ## Core Tools & Guides
 
 - [Free Resume Builder & One-Click Resume-to-Website Studio](${BASE_URL}/): Create ATS-ready resumes across 8 distinct templates, export vector PDFs with zero watermarks, and convert your resume to a responsive standalone HTML portfolio website.
-- [2026 Industry Resume & Website Guides Directory](${BASE_URL}/resume-to-website-guides.html): Browse 20 specialized role templates and conversion guides across tech, product, design, marketing, finance, academia, and remote roles.
+- [2026 Resume Guides, Free Alternatives & Website Converters Directory](${BASE_URL}/resume-to-website-guides.html): Browse 10 zero-paywall comparisons/converters and 20 specialized role templates across tech, product, design, marketing, finance, academia, and remote roles.
 - [How to Turn Your Resume into a Website & Host It Free in 30 Seconds](${BASE_URL}/deploy-guide.html): Step-by-step instructions to deploy your exported \`index.html\` or ZIP bundle for free on Netlify Drop, Cloudflare Pages, Vercel, or GitHub Pages.
+
+## Free Alternatives, Harvard ATS Template & PDF-to-Website Converters
+
+${highIntentLines}
 
 ## 2026 Industry Resume Builders & Resume-to-Website Guides
 
@@ -772,10 +1065,10 @@ ${guideLines}
 
 ## Key Capabilities
 
-- **Free Resume Builder**: 8 Western ATS & modern templates (Executive Classic, Harvard ATS, Modern Minimal, Silicon Valley Tech, Editorial Serif, Swiss 2-Column Grid, Nordic Clean, Slate Dark Header), US Letter & A4 vector PDF export, zero signups, zero paywalls.
-- **Free Resume to HTML Converter**: Instantly converts resume sections into a self-contained \`index.html\` webpage with dark/light mode, scroll animations, interactive project cards, and SEO Open Graph tags.
+- **Free Resume Builder (No Sign Up, No Paywall)**: 8 Western ATS & modern templates (Executive Classic, Harvard ATS, Modern Minimal, Silicon Valley Tech, Editorial Serif, Swiss 2-Column Grid, Nordic Clean, Slate Dark Header), US Letter & A4 vector PDF export, zero signups, zero credit cards, zero watermarks.
+- **Free Resume to HTML Converter**: Instantly converts PDF/DOCX/edited resume sections into a self-contained \`index.html\` webpage with dark/light mode, scroll animations, interactive project cards, and SEO Open Graph tags.
 - **One-Click Personal Website Builder**: Download a ready-to-publish HTML file or ZIP package and launch a live HTTPS personal website in under 30 seconds.
-- **BYOK AI Resume Tailoring**: Connect your own OpenAI, DeepSeek, Google Gemini, or OpenRouter API key (stored strictly in browser \`localStorage\`) to rewrite bullets with the Google XYZ impact formula and boost ATS & AI resume search match scores.
+- **BYOK AI Resume Tailoring**: Connect your own OpenAI, DeepSeek, Google Gemini, OpenRouter, or local Ollama API key (stored strictly in browser \`localStorage\`) to rewrite bullets with the Google XYZ impact formula and boost ATS & AI resume search match scores.
 
 ## Legal & Open Source
 
@@ -788,8 +1081,13 @@ ${guideLines}
 for (const page of LANDING_PAGES) {
   fs.writeFileSync(path.join(PUBLIC_DIR, `${page.slug}.html`), renderRolePage(page), 'utf8');
 }
+for (const page of HIGH_INTENT_PAGES) {
+  fs.writeFileSync(path.join(PUBLIC_DIR, `${page.slug}.html`), renderHighIntentPage(page), 'utf8');
+}
 fs.writeFileSync(path.join(PUBLIC_DIR, 'resume-to-website-guides.html'), renderHubPage(), 'utf8');
 fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), renderSitemap(), 'utf8');
 fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), renderLlmsTxt(), 'utf8');
 
-console.log(`Generated ${LANDING_PAGES.length} landing pages, hub page, sitemap.xml (26 URLs), and llms.txt.`);
+console.log(
+  `Generated ${LANDING_PAGES.length} role pages, ${HIGH_INTENT_PAGES.length} blue-ocean pages, hub page, sitemap.xml (${3 + HIGH_INTENT_PAGES.length + LANDING_PAGES.length + 3} URLs), and llms.txt.`,
+);

@@ -8,9 +8,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Software Engineer Free Resume Builder & Turn Resume into Website in 1 Click (2026)',
     h1: 'Software Engineer Resume Guide (2026): Build Free & Turn Your Resume into a Developer Website',
     description:
-      'Free software engineer resume builder and one-click developer portfolio website generator. Learn why 2026 engineering teams reject fluff bullets, convert your resume to HTML free, and deploy in 30 seconds.',
+      'Free software engineer resume builder with no sign up. Export an ATS vector PDF and turn your resume into an HTML developer website in one click.',
     keywords:
-      'software engineer resume builder free, github resume to developer portfolio website, turn software engineer resume into website, free resume to html developer 2026',
+      'software engineer resume builder free, github resume to developer portfolio website, turn software engineer resume into website, free resume to html developer 2026, no sign up, no paywall pdf',
     tldr:
       'A 2026 software engineer resume passes ATS and engineering manager review in under seven seconds when it pairs single-column US Letter formatting with measurable system impact—latency drops, cloud cost savings, and uptime SLAs—instead of laundry lists of languages. Using ResumeCraft, engineers can build a free ATS-clean vector PDF resume with zero watermarks, tailor bullets with their own AI API key (OpenAI, DeepSeek, or Gemini), and turn that same resume into an animated developer HTML website in one click. Publishing a clean personal URL (deployed free on Cloudflare Pages, Netlify Drop, or Vercel in 30 seconds) gives hiring managers instant access to your architecture notes, GitHub repos, and contact details without forcing anyone to download a heavy attachment on mobile.',
     unpopularTruths: [
@@ -87,9 +87,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Frontend Developer Free Resume Maker & Interactive HTML Portfolio Generator (2026)',
     h1: 'Frontend Developer Resume Guide (2026): Free Builder & 1-Click Interactive Web Portfolio',
     description:
-      'Build a free frontend developer resume and convert it into an animated glassmorphism HTML website in one click. Skip star-rating skill bars and highlight Core Web Vitals & accessibility.',
+      'Free frontend developer resume builder with no paywall. Export a clean ATS PDF or turn your React resume into a live HTML portfolio in one click.',
     keywords:
-      'frontend developer resume builder free, react developer resume to website, free resume to html portfolio, frontend engineer cv maker 2026',
+      'frontend developer resume builder free, react developer resume to website, free resume to html portfolio, frontend engineer cv maker 2026, resume to single html file, free static portfolio',
     tldr:
       'Frontend hiring managers in 2026 judge candidates in two ways: can your resume survive ATS keyword checks, and does your personal website actually feel crisp to use? A frontend resume that relies on subjective skill-percentage bars or ignores Core Web Vitals and WCAG accessibility reads outdated. ResumeCraft lets React, TypeScript, and UI engineers create a free ATS-friendly PDF resume focused on bundle reductions, LCP improvements, and design-system adoption—and then convert that exact resume into a 60fps animated Executive Aurora portfolio website in one click. You get cursor-tracking card spotlights, smooth scroll reveals, zero framework bloat, and free 30-second hosting on Vercel or Netlify Drop.',
     unpopularTruths: [
@@ -166,9 +166,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Data Scientist & ML Free Resume Builder + Portfolio Website Generator (2026)',
     h1: 'Data Scientist & AI Engineer Resume (2026): Free Builder & One-Click Portfolio Website',
     description:
-      'Create a free data scientist or ML engineer resume and convert it into a live portfolio website in one click. Drop Titanic Kaggle projects and quantify business lift & RAG evals.',
+      'Free data scientist & ML resume builder—no signup needed. Quantify RAG evals and business lift, export PDF, or turn it into a live website in 1 click.',
     keywords:
-      'data scientist resume builder free, machine learning engineer resume to website, ml portfolio generator free, ai engineer cv template 2026',
+      'data scientist resume builder free, machine learning engineer resume to website, ml portfolio generator free, ai engineer cv template 2026, no sign up, no paywall pdf',
     tldr:
       'In 2026, hiring managers reviewing data scientist and ML engineer resumes instantly skip candidates whose projects stop at Jupyter notebooks or Titanic survival predictions. High-converting AI resumes tie model architecture directly to production metrics—retention lift, inference latency, hallucination reduction, and dollar savings—while surfacing clean SQL, PyTorch, and MLOps keywords for AI resume search. With ResumeCraft, you can craft an ATS-ready PDF resume for free, use your own OpenAI or DeepSeek key to align bullets against an ML job description, and convert your CV into a terminal-styled HTML website in one click to showcase benchmark repos and interactive writeups.',
     unpopularTruths: [
@@ -245,9 +245,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'DevOps & SRE Free Resume Builder + One-Click Portfolio Website (2026)',
     h1: 'DevOps & SRE Resume Guide (2026): Free ATS Builder & Convert Resume to HTML Website',
     description:
-      'Free DevOps & Site Reliability Engineer resume builder with instant personal website HTML export. Showcase Kubernetes, Terraform, FinOps savings, and MTTR metrics cleanly.',
+      'Free DevOps & SRE resume builder with instant HTML website export. Showcase Kubernetes, Terraform & MTTR metrics with zero paywalls or account signup.',
     keywords:
-      'devops resume builder free, sre resume to personal website, kubernetes engineer resume html, cloud architect portfolio generator 2026',
+      'devops resume builder free, sre resume to personal website, kubernetes engineer resume html, cloud architect portfolio generator 2026, resume to single html file, free static portfolio',
     tldr:
       'Top DevOps, Platform, and SRE resumes in 2026 focus on reliability math and cloud unit economics—not alphabet soup of 40 CNCF logos. Hiring VPs of Infrastructure scan for Mean Time to Recovery (MTTR) reductions, deployment frequency gains, Terraform automation speedups, and AWS/GCP FinOps savings. ResumeCraft gives infrastructure engineers a free, distraction-free ATS resume builder plus a one-click Resume-to-Website generator using the high-contrast Slate theme, turning your SLO wins, GitHub IaC tools, and certifications into a fast static webpage you can host free on Cloudflare Pages.',
     unpopularTruths: [
@@ -324,9 +324,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Cybersecurity Free Resume Builder & One-Click Portfolio Website (2026)',
     h1: 'Cybersecurity Resume Guide (2026): Free ATS Builder & Turn Your CV into a Secure Web Bio',
     description:
-      'Build a free cybersecurity analyst, AppSec, or CloudSec resume and convert it to a static HTML personal website in one click. Highlight IAM guardrails, CVEs & SOC 2 impact.',
+      'Free cybersecurity, AppSec & CloudSec resume builder—no credit card. Highlight IAM, CVEs & SOC 2 wins, and export a static HTML website in one click.',
     keywords:
-      'cybersecurity resume builder free, infosec resume to website, appsec portfolio website generator, soc analyst resume template 2026',
+      'cybersecurity resume builder free, infosec resume to website, appsec portfolio website generator, soc analyst resume template 2026, no sign up, free static portfolio',
     tldr:
       'Cybersecurity resumes in 2026 get rejected when they read like compliance checklists instead of risk-reduction logs. Whether you work in AppSec, CloudSec, or SOC operations, hiring leads look for concrete posture gains—over-privileged IAM roles eliminated, vulnerability remediation rates inside CI/CD, and SOC 2 audits passed cleanly. ResumeCraft provides a free privacy-first resume builder (zero server uploads, 100% client-side) plus a one-click Resume-to-HTML converter that produces an ultra-lean static website with zero third-party trackers or cookies—fitting an InfoSec practitioner’s own standards.',
     unpopularTruths: [
@@ -403,9 +403,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Product Manager Free Resume Builder & Turn Resume into Website (2026)',
     h1: 'Product Manager Resume Guide (2026): Stop Writing "Cross-Functional" & Build Your Web Hub',
     description:
-      'Free product manager resume builder and one-click PM portfolio website generator. Replace meeting-heavy fluff with ARR growth, activation lift, and product kill decisions.',
+      'Free product manager resume builder with no download paywall. Replace fluff with ARR growth and turn your PM resume into a live website in 1 click.',
     keywords:
-      'product manager resume builder free, pm portfolio website from resume, turn product manager resume into website, senior pm resume template 2026',
+      'product manager resume builder free, pm portfolio website from resume, turn product manager resume into website, senior pm resume template 2026, no paywall pdf, no sign up',
     tldr:
       'A winning 2026 Product Manager resume proves commercial judgment rather than calendar stamina. Phrases like "spearheaded cross-functional alignment" tell VP Product reviewers nothing; quantified activation lifts, ARR expansion, pricing changes, and features you intentionally killed tell them everything. With ResumeCraft, PMs and Technical PMs can build a crisp, ATS-optimized US Letter resume for free, tailor bullets against any PM job description using their own AI API key, and turn their resume into an interactive personal website in one click to showcase product teardowns, launch metrics, and case studies.',
     unpopularTruths: [
@@ -482,9 +482,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'UX Designer Portfolio from PDF Resume Free + Resume Builder (2026)',
     h1: 'UX & Product Designer Resume (2026): Free ATS Builder & Turn PDF Resume into Portfolio Website',
     description:
-      'Convert your UX designer PDF resume into a clean Nordic Bento portfolio website in one click—free, responsive, and ATS-parseable with zero Figma export bugs.',
+      'Convert your UX designer PDF resume into a clean Nordic Bento portfolio website in one click—free, responsive, and ATS-safe with zero Figma parser bugs.',
     keywords:
-      'ux designer portfolio from pdf resume free, product designer resume builder, ui ux resume to website generator, figma designer cv template 2026',
+      'ux designer portfolio from pdf resume free, product designer resume builder, ui ux resume to website generator, figma designer cv template 2026, resume to single html file, ats safe alternative',
     tldr:
       'Product and UX designers face an annoying paradox in 2026: exporting a resume directly from Figma often turns text into garbled outlines that ATS parsers reject, yet sending a plain text CV undersells your visual taste. ResumeCraft solves both sides for free. Upload your existing PDF resume or start with our clean Nordic preset to generate a 100% machine-readable vector PDF for Greenhouse/Lever—and in one click, turn that same resume into an airy, tactile Nordic Bento HTML portfolio website complete with case-study links, light/dark modes, and 60fps micro-interactions.',
     unpopularTruths: [
@@ -561,9 +561,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Graphic & Brand Designer Free Resume Builder & Portfolio Website (2026)',
     h1: 'Graphic & Brand Designer Resume (2026): Free Builder & Editorial Web Portfolio Generator',
     description:
-      'Create a sharp ATS-friendly graphic designer resume for free and turn it into a warm Editorial Serif HTML portfolio website in one click. No heavy PDF portfolios needed.',
+      'Create an ATS-safe graphic designer resume free without paywalls and turn it into an Editorial Serif HTML portfolio website in one click—no heavy PDF.',
     keywords:
-      'graphic designer resume builder free, brand designer portfolio website generator, creative resume to website free, visual designer cv maker 2026',
+      'graphic designer resume builder free, brand designer portfolio website generator, creative resume to website free, visual designer cv maker 2026, no paywall pdf, free static portfolio',
     tldr:
       'Creative directors want proof of typographic discipline in three seconds—and HR portals still run your resume through automated text parsers before any designer ever sees it. Sending a 45MB InDesign PDF fails both email size limits and ATS screens. ResumeCraft lets brand, print, and visual designers build a fast, readable ATS resume for free, and in one click convert it into an Editorial Serif magazine-style HTML website with warm champagne surfaces, italic serif headlines, and direct links to live Behance, Dribbble, or studio showcases.',
     unpopularTruths: [
@@ -640,9 +640,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Copywriter & Technical Writer Free Resume Builder + Portfolio Site (2026)',
     h1: 'Copywriter & Content Strategist Resume (2026): Free Builder & One-Click Writing Portfolio',
     description:
-      'Build a free copywriter or technical writer resume and convert it into an editorial HTML portfolio website in one click. Cut adjectives and showcase traffic, conversions & links.',
+      'Free copywriter & technical writer resume builder—no signup. Showcase traffic & conversions, export clean PDF, or launch an HTML portfolio in 1 click.',
     keywords:
-      'copywriter resume builder free, technical writer resume to website, content strategist portfolio generator free, writer cv template 2026',
+      'copywriter resume builder free, technical writer resume to website, content strategist portfolio generator free, writer cv template 2026, no sign up, resume to single html file',
     tldr:
       'Nothing tanks a writer’s credibility faster than bloated, cliché-ridden resume prose. In 2026, SaaS content leads and editorial directors evaluate writers on clarity, conversion lift, organic search traffic, and clickable published clips. ResumeCraft lets copywriters, UX writers, and technical writers build a tight, typo-free ATS resume for free—and turn it into an Editorial Serif webpage in one click where every flagship article, landing page teardown, and lifecycle email metric links directly to live proof.',
     unpopularTruths: [
@@ -719,9 +719,9 @@ export const LANDING_PAGES_PART1 = [
     title: 'Digital Marketing Free Resume Builder & Portfolio Website Generator (2026)',
     h1: 'Digital Marketing & Growth Resume (2026): Free Builder & One-Click Campaign Website',
     description:
-      'Build a free digital marketing or growth hacker resume and convert it into a live personal website in one click. Drop vanity impressions and highlight CAC, ROAS, and LTV:CAC.',
+      'Free digital marketing & growth resume builder with instant HTML site export. Highlight CAC, ROAS & LTV metrics cleanly with zero watermarks or fees.',
     keywords:
-      'digital marketing resume builder free, growth marketer resume to website, performance marketing portfolio free, mkt cv template 2026',
+      'digital marketing resume builder free, growth marketer resume to website, performance marketing portfolio free, mkt cv template 2026, no paywall pdf, no sign up',
     tldr:
       'In 2026, growth and performance marketing resumes get judged like P&L statements. Listing channels you touched ("ran Meta and Google Ads") without revealing budget scale, blended CAC, ROAS, or lifecycle activation lift sends your application straight to the maybe pile. ResumeCraft gives marketers a 100% free ATS resume builder, BYOK AI keyword alignment against competitive growth JDs, and a one-click Resume-to-Website generator that turns your attribution wins and funnel case studies into a modern Nordic Bento personal webpage ready to drop in any LinkedIn message.',
     unpopularTruths: [

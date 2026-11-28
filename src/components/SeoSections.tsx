@@ -202,6 +202,54 @@ export function SeoSections({
         </div>
       </section>
 
+      {/* Free Alternatives & High-Intent Tools */}
+      <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-800">
+              {isEn ? 'ZERO PAYWALLS · POPULAR TOOLS & ALTERNATIVES' : '零付费墙 · 热门模板与免费替代方案'}
+            </span>
+            <h2 className="mt-3 font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-slate-900">
+              {isEn
+                ? 'Free Resume Builder Alternatives, Harvard ATS & LinkedIn PDF-to-Website'
+                : '免费替代付费简历网站 · Harvard ATS 模板 · LinkedIn PDF 一键建站'}
+            </h2>
+          </div>
+          <a
+            href="/resume-to-website-guides.html"
+            className="text-sm font-semibold text-indigo-600 hover:underline"
+          >
+            {isEn ? 'See all guides & comparisons →' : '查看全部对比与指南 →'}
+          </a>
+        </div>
+
+        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            { href: '/free-zety-alternative.html', title: 'Free Zety Alternative', tag: 'No Export Paywall' },
+            { href: '/free-resume-io-alternative.html', title: 'Resume.io Alternative', tag: 'Unlimited Free PDF' },
+            { href: '/canva-resume-ats-alternative.html', title: 'Canva ATS Alternative', tag: '100% ATS Parseable' },
+            { href: '/harvard-ats-resume-template-free.html', title: 'Harvard ATS Template', tag: 'Classic Academic/US' },
+            { href: '/linkedin-pdf-to-website-free.html', title: 'LinkedIn PDF to Site', tag: '1-Click HTML Export' },
+            { href: '/convert-pdf-resume-to-html-website.html', title: 'PDF/DOCX to HTML Site', tag: 'Single index.html' },
+            { href: '/free-resume-builder-no-signup.html', title: 'No-Signup Free Builder', tag: 'Zero Account Needed' },
+            { href: '/host-resume-website-free-github-netlify.html', title: 'Free Static Hosting', tag: 'Netlify / CF / GitHub' },
+            { href: '/byok-ai-resume-tailor-private.html', title: 'Private BYOK AI Tailor', tag: 'Own OpenAI / Gemini Key' },
+            { href: '/free-resume-builder-comparison-2026.html', title: '2026 Free Builders Test', tag: 'No-Paywall Benchmark' },
+          ].map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="group rounded-xl border border-indigo-200/80 bg-indigo-50/40 p-3.5 transition hover:border-indigo-400 hover:bg-indigo-50"
+            >
+              <div className="text-[11px] font-semibold text-indigo-700">{item.tag}</div>
+              <div className="mt-0.5 text-sm font-bold text-slate-900 group-hover:text-indigo-700">
+                {item.title} &rarr;
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
       {/* 2026 Industry Guides & Free Resume-to-Website Hub */}
       <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
@@ -293,6 +341,12 @@ export function SeoSections({
             &copy; {new Date().getFullYear()} ResumeCraft &middot; Free Resume Builder &amp; One-Click Resume-to-Website Studio
           </div>
           <div className="flex flex-wrap items-center gap-5 font-medium text-slate-600">
+            <a href="/harvard-ats-resume-template-free.html" className="hover:text-indigo-600">
+              Harvard ATS Template
+            </a>
+            <a href="/free-zety-alternative.html" className="hover:text-indigo-600">
+              Free Zety Alternative
+            </a>
             <a href="/resume-to-website-guides.html" className="hover:text-indigo-600">
               Industry Guides (20 Roles)
             </a>

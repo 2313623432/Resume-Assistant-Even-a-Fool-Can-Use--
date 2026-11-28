@@ -1276,6 +1276,57 @@ const PRESET_SPECS: PresetSpec[] = [
       { category: 'Platforms', items: ['Notion', 'Linear', 'Zendesk', 'Gainsight', 'Salesforce', 'Slack'] },
     ],
   },
+  {
+    slug: 'harvard-ats',
+    label: 'Harvard ATS Classic',
+    badge: 'Harvard Parchment',
+    template: 'harvard',
+    accentColor: '#1e293b',
+    fontFamily: 'merriweather',
+    educationFirst: true,
+    basics: {
+      name: 'Jordan Hayes',
+      title: 'Strategy & Product Operations Associate',
+      email: 'jordan.hayes@example.com',
+      phone: '+1 (617) 555-0148',
+      location: 'Boston, MA',
+      linkedin: 'linkedin.com/in/jordanhayes',
+      website: 'jordanhayes.org',
+    },
+    summary:
+      'Analytical Strategy & Product Operations professional trained in classic Harvard ATS format—turning messy operational data into crisp executive decisions and revenue-backed roadmaps.',
+    experience: [
+      {
+        title: 'Bain & Company',
+        subtitle: 'Senior Associate Consultant',
+        location: 'Boston, MA',
+        date: 'Aug 2023 – Present',
+        description:
+          '• Led pricing and packaging workstream for a $380M B2B SaaS client, uncovering $19M in annual net expansion opportunities.\n• Built automated cohort retention models in SQL + Excel across 45K enterprise accounts, cutting executive diligence cycle time by 35%.',
+      },
+      {
+        title: 'HubSpot',
+        subtitle: 'Product Operations Intern',
+        location: 'Cambridge, MA',
+        date: 'May 2022 – Aug 2022',
+        description:
+          '• Audited onboarding funnel drop-offs across 12,000 trial workspaces and shipped 3 activation experiments that raised Day-14 conversion by 9.4%.\n• Standardized quarterly OKR tracking dashboard adopted by 6 product squads.',
+      },
+    ],
+    education: [
+      {
+        title: 'Harvard University',
+        subtitle: 'A.B. in Economics, Minor in Computer Science (Magna Cum Laude)',
+        location: 'Cambridge, MA',
+        date: '2019 – 2023',
+        description: '• GPA: 3.91/4.00 · John Harvard Scholar · Managing Editor, Harvard Economics Review.',
+      },
+    ],
+    skills: [
+      { category: 'Strategy & Analytics', items: ['Financial Modeling', 'SQL', 'Python', 'Pricing Strategy', 'Cohort Analysis', 'Executive Presentations'] },
+      { category: 'ATS & Operations', items: ['Product Operations', 'GTM Planning', 'A/B Testing', 'Tableau', 'Looker', 'Excel'] },
+    ],
+  },
 ];
 
 export const ROLE_PRESETS: Record<string, RolePreset> = Object.fromEntries(

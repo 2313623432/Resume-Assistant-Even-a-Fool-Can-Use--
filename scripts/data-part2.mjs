@@ -8,9 +8,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'SEO & GEO Specialist Free Resume Builder & HTML Website Generator (2026)',
     h1: 'SEO & GEO Specialist Resume (2026): Build Free & Prove You Know HTML with a Live Site',
     description:
-      'Free SEO & Generative Engine Optimization (GEO) resume builder and one-click HTML portfolio website generator. Showcase non-branded traffic lifts, Schema JSON-LD, and llms.txt.',
+      'Free SEO & GEO specialist resume builder with 1-click HTML portfolio export. Showcase organic traffic wins, Schema JSON-LD & llms.txt with no paywall.',
     keywords:
-      'seo specialist resume builder free, geo seo resume to html website, technical seo portfolio generator, ai search optimization resume 2026',
+      'seo specialist resume builder free, geo seo resume to html website, technical seo portfolio generator, ai search optimization resume 2026, no paywall pdf, free static portfolio',
     tldr:
       'In 2026, hiring managers interviewing SEO and GEO (Generative Engine Optimization) specialists test one simple thing first: does the candidate rank—or even own—a clean, indexable personal website? Submitting a plain Word resume claiming technical SEO expertise without a fast canonical personal URL undermines your pitch. ResumeCraft gives SEO and GEO practitioners a free ATS-ready resume builder plus a one-click Resume-to-HTML generator that exports clean semantic HTML complete with Open Graph tags, descriptive metadata, and fast page load—deployed free on Cloudflare Pages or Netlify in 30 seconds.',
     unpopularTruths: [
@@ -87,9 +87,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'B2B SaaS Sales (AE & SDR) Free Resume Builder + Bio Website (2026)',
     h1: 'SaaS Sales & Account Executive Resume (2026): Free Builder & Deal-Closing Bio Website',
     description:
-      'Build a quota-driven B2B SaaS AE or SDR resume for free and turn it into a sharp executive bio webpage in one click. Show quota %, ACV, MEDDPICC & president’s club wins.',
+      'Free B2B SaaS AE & SDR resume builder with no credit card. Highlight quota %, ACV & MEDDPICC wins, then turn your resume into a bio site in 1 click.',
     keywords:
-      'saas sales resume builder free, account executive resume to website, sdr resume template free, b2b sales bio webpage 2026',
+      'saas sales resume builder free, account executive resume to website, sdr resume template free, b2b sales bio webpage 2026, no sign up, no paywall pdf',
     tldr:
       'VP Sales recruiters read Account Executive and SDR resumes with a calculator in hand: what was your quota, what percentage did you hit, what was your average ACV, and how many consecutive quarters did you beat plan? Generic claims like "strong communicator and relationship builder" get ignored in 2026. ResumeCraft helps B2B sales pros build a clean, high-contrast ATS resume for free—and in one click convert it into a crisp Slate Dark Header executive bio page to drop right inside LinkedIn InMails and warm outbound sequences.',
     unpopularTruths: [
@@ -166,9 +166,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Investment Banking & Finance Free ATS Resume Builder + Bio Site (2026)',
     h1: 'Finance & Investment Banking Resume (2026): Classic Harvard ATS Free Builder & Web Bio',
     description:
-      'Create a strict Wall Street / Wharton-style finance ATS resume for free with zero formatting bugs, and optionally generate a clean executive bio webpage in one click.',
+      'Free Wall Street & Wharton-style finance ATS resume builder with zero formatting bugs. Export crisp vector PDF or launch a bio webpage in one click.',
     keywords:
-      'investment banking resume builder free, finance ats resume template, harvard finance cv maker, private equity bio website 2026',
+      'investment banking resume builder free, finance ats resume template, harvard finance cv maker, private equity bio website 2026, no paywall pdf, no sign up',
     tldr:
       'In investment banking, private equity, and corporate FP&A, flashy two-column Canva templates get laughed out of recruiting rooms. Managing Directors expect classic, monochrome, single-column serif formatting packed with deal values ($B/$M), transaction types (sell-side M&A, LBO, IPO), and GPA/CFA credentials. ResumeCraft includes a dedicated Harvard ATS template built specifically for Wall Street and Big 4 standards—100% free with vector US Letter PDF output—plus an optional one-click Harvard Parchment web bio generator for LinkedIn and deal-team introductions.',
     unpopularTruths: [
@@ -245,9 +245,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Academic CV to Personal Website Generator Free (PhD & Researchers 2026)',
     h1: 'Academic CV to Personal Website Generator (2026): Free for PhDs, Postdocs & Grad Students',
     description:
-      'Turn your academic CV into a clean research website in one click for free. Showcase peer-reviewed publications, grants, teaching & labs without fighting Jekyll or Hugo.',
+      'Turn your academic CV into a clean research website in one click—free, no Jekyll or Hugo needed. Showcase publications, grants & labs without signup.',
     keywords:
-      'academic cv to personal website generator, phd resume to website free, researcher homepage builder, faculty cv html converter 2026',
+      'academic cv to personal website generator, phd resume to website free, researcher homepage builder, faculty cv html converter 2026, free static portfolio, no sign up',
     tldr:
       'Every PhD student, postdoc, and faculty applicant gets told to "put up a clean research homepage," yet spending a weekend debugging broken Jekyll themes or Hugo dependencies steals precious hours from writing papers and grants. ResumeCraft turns an academic CV into a dignified, fast-loading personal research website in one click—completely free. Built on our warm Harvard Ivory Parchment theme with Merriweather serif typography, it lets you organize Education first, showcase peer-reviewed Publications, Fellowships, Grants, and lab GitHub repos cleanly, and host free forever on GitHub Pages (`<name>.github.io`) or Netlify.',
     unpopularTruths: [
@@ -324,9 +324,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'CS Student & New Grad Free Resume Builder + Portfolio Website (2026)',
     h1: 'CS Student & New Grad Resume (2026): Free Builder & One-Click Portfolio Website',
     description:
-      'Free computer science student & internship resume builder + one-click developer website generator. Stand out in 2026 SWE new-grad hiring with real shipped projects.',
+      'Free CS student & internship resume builder + 1-click developer portfolio website. Stand out in 2026 SWE new-grad hiring with zero subscription fees.',
     keywords:
-      'cs student resume builder free, computer science internship resume to website, new grad swe portfolio free, college student resume html 2026',
+      'cs student resume builder free, computer science internship resume to website, new grad swe portfolio free, college student resume html 2026, no paywall pdf, no sign up',
     tldr:
       'Breaking into 2026 software engineering internships and new-grad roles means competing against thousands of nearly identical university resumes. Putting Education at the top with your graduation month, GPA (if ≥3.5), relevant systems coursework, and shipping one project real humans actually used beats padding blank lines with "Dean’s List" fluff. ResumeCraft lets CS students and international grads create an ATS-clean US Letter resume for free and convert it into a Silicon Valley Tech Terminal personal website in one click—giving recruiters instant access to your GitHub demos and Contact button.',
     unpopularTruths: [
@@ -403,9 +403,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'MBA & Consulting Free Resume Builder + Executive Bio Website (2026)',
     h1: 'MBA & Management Consulting Resume (2026): Free MBB-Style Builder & Web Bio',
     description:
-      'Build a sharp McKinsey/Bain/BCG-style MBA consulting resume for free and turn it into a clean executive bio website in one click. Quantify EBITDA, due diligence & client impact.',
+      'Free McKinsey/Bain/BCG-style MBA consulting resume builder—no watermark. Quantify EBITDA & client impact, then launch an executive bio site in 1 click.',
     keywords:
-      'mba resume builder free, management consulting resume template, mbb resume to personal website, strategy consultant cv maker 2026',
+      'mba resume builder free, management consulting resume template, mbb resume to personal website, strategy consultant cv maker 2026, no paywall pdf, no sign up',
     tldr:
       'Top consulting firms (McKinsey, Bain, BCG) and post-MBA strategy teams enforce an unwritten aesthetic standard: dense, single-page, monochrome serif formatting where every single line starts with an executive action verb and closes with quantified business impact ($M EBITDA, % cost reduction, SteerCo scope). ResumeCraft provides a clean Harvard ATS preset built for MBA and consulting recruiting—100% free with vector PDF export—plus a dignified Harvard Parchment personal bio webpage for networking coffee chats, PE outreach, and LinkedIn profiles.',
     unpopularTruths: [
@@ -482,9 +482,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Career Change Free Resume Builder & Portfolio Website Generator (2026)',
     h1: 'Career Change Resume Guide (2026): Free Builder & Turn Transferable Skills into a Website',
     description:
-      'Switching into tech, product, or ops? Build a free career-change resume highlighting shipped projects & transferable wins, then turn it into a 2-column website in 1 click.',
+      'Free career-change & bootcamp resume builder with no signup. Highlight shipped projects and transferable wins, then turn it into a 2-column HTML site.',
     keywords:
-      'career change resume builder free, bootcamp grad resume to website, career transition portfolio generator, transferable skills resume 2026',
+      'career change resume builder free, bootcamp grad resume to website, career transition portfolio generator, transferable skills resume 2026, no sign up, free static portfolio',
     tldr:
       'Career changers fail when they either hide their past career completely (leaving a suspicious gap) or open with an apologetic "Looking to transition into..." objective. In 2026, hiring managers love domain crossovers—former nurses building health-tech, teachers building EdTech, operations leads writing automation scripts—provided your new hands-on projects lead the page. ResumeCraft gives career switchers a free resume builder paired with the Swiss 2-Column Split website layout, putting your new skills upfront while framing previous industry achievements as an unfair advantage.',
     unpopularTruths: [
@@ -561,9 +561,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Project Manager & Scrum Free Resume Builder + Portfolio Site (2026)',
     h1: 'Project Manager & TPM Resume Guide (2026): Free Builder & One-Click Program Web Bio',
     description:
-      'Create a free PMP / Scrum Master / Technical Program Manager resume and convert it into an executive personal website in one click. Show budget, headcount & delivery wins.',
+      'Free PMP, Scrum & Technical Program Manager resume builder—no paywall. Show budget & delivery wins, export PDF, or build a bio site in one click.',
     keywords:
-      'project manager resume builder free, technical program manager resume to website, pmp scrum master cv template, delivery portfolio website 2026',
+      'project manager resume builder free, technical program manager resume to website, pmp scrum master cv template, delivery portfolio website 2026, no paywall pdf, no sign up',
     tldr:
       'Great Project and Technical Program Managers in 2026 get hired for predictability under complexity—not for holding daily standups. Hiring Directors look immediately for team scale (# of squads/engineers), budget size ($M), schedule recovery (weeks ahead of launch), and risk blockers removed. ResumeCraft gives PMs, Scrum Masters, and TPMs a free ATS resume generator (PMP & Jira/Linear keywords ready) plus a one-click Executive Aurora portfolio site to highlight complex enterprise migrations and cross-timezone program launches.',
     unpopularTruths: [
@@ -640,9 +640,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Freelancer Free Resume Builder & 1-Click Client Website Generator (2026)',
     h1: 'Freelancer & Consultant Guide (2026): Turn Your Resume into a Client-Winning Website Free',
     description:
-      'Stop paying $20/mo just to show clients your bio. Convert your freelancer resume into a fast Swiss 2-column personal website in one click—plus export a clean PDF for retainers.',
+      'Stop paying $20/mo for a bio site. Turn your freelancer resume into a fast Swiss 2-column HTML website in 1 click and export clean PDFs for free.',
     keywords:
-      'freelancer resume to personal website free, indie consultant website builder one click, consultant resume maker free, client portfolio html 2026',
+      'freelancer resume to personal website free, indie consultant website builder one click, consultant resume maker free, client portfolio html 2026, free static portfolio, no sign up',
     tldr:
       'Independent consultants, fractional leads, and freelancers rarely fail from lack of skill—they lose clients because a prospect asks "Do you have a link I can forward to my co-founder?" and they only have a messy LinkedIn URL or an outdated PDF. ResumeCraft lets freelancers maintain one clean source of truth: build an ATS/procurement-friendly PDF for enterprise vendors AND convert that same profile into a Swiss 2-Column client-ready personal website in one click—complete with service focus, shipped client ROI metrics, and a 1-click Copy Email CTA, hosted 100% free on Cloudflare Pages.',
     unpopularTruths: [
@@ -719,9 +719,9 @@ export const LANDING_PAGES_PART2 = [
     title: 'Remote Job Free Resume Builder & Personal Website Generator (2026)',
     h1: 'Remote Work Resume Guide (2026): Free ATS Builder & Async-Ready Personal Website',
     description:
-      'Applying to global 100% remote teams? Build a free remote-ready resume proving async writing & timezone overlap, and turn it into a fast minimal website in one click.',
+      'Free remote job resume builder with no signup. Prove async writing & timezone overlap, export ATS PDF, and turn your resume into a site in 1 click.',
     keywords:
-      'remote job resume builder free, async remote work resume to website, digital nomad portfolio generator, global remote cv template 2026',
+      'remote job resume builder free, async remote work resume to website, digital nomad portfolio generator, global remote cv template 2026, no sign up, no paywall pdf',
     tldr:
       'Distributed companies like GitLab, Zapier, and Doist reject hundreds of qualified applicants simply because their resumes scream "I need someone hovering over my desk." Winning remote resumes explicitly state timezone overlap (e.g., US-Eastern / EMEA hours), asynchronous handbook documentation, cross-region SLA handoffs, and self-directed retention outcomes. ResumeCraft gives global remote candidates a free resume builder paired with the crisp Modern Minimal web portfolio—turning your async track record into an instant, mobile-fast URL recruiters can read from anywhere.',
     unpopularTruths: [

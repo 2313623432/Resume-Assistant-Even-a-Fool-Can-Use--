@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import type { ResumeData } from '../types/resume';
 
 function escapeHtml(value: string): string {
@@ -1273,6 +1272,8 @@ export function downloadWebsiteHtml(data: ResumeData) {
 }
 
 export async function downloadWebsiteZip(data: ResumeData) {
+  const jszipMod = await import('jszip');
+  const JSZip = jszipMod.default ?? (jszipMod as unknown as typeof import('jszip'));
   const zip = new JSZip();
   const folderName =
     (data.basics.name || 'resume-website')

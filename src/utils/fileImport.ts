@@ -1,12 +1,10 @@
-import mammoth from 'mammoth';
-import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { DEFAULT_RESUME_DATA } from '../data/defaultResume';
 import type { ResumeData } from '../types/resume';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
-
 async function extractPdfText(buffer: ArrayBuffer): Promise<string> {
+  const pdfjsLib = await import('pdfjs-dist');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(buffer) });
   const pdf = await loadingTask.promise;
   const pages: string[] = [];
@@ -105,7 +103,15 @@ export async function importResumeFile(
 
   if (lower.endsWith('.docx')) {
     const buffer = await file.arrayBuffer();
-    const { value } = await mammoth.extractRawText({ arrayBuffer: buffer });
+    const mammothMod = await import('mammoth');
+    const extractRawText =
+      mammothMod.extractRawText ??
+      (mammothMod as unknown as { default?: { extractRawText?: typeof mammothMod.extractRawText } })
+        .default?.extractRawText;
+    if (!extractRawText) {
+      throw new Error('DOCX parser failed to load.');
+    }
+    const { value } = await extractRawText({ arrayBuffer: buffer });
     if (!value.trim()) {
       throw new Error('Could not extract text from this DOCX file.');
     }

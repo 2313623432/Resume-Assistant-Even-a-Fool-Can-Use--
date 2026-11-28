@@ -72,6 +72,12 @@ export function Navbar({
               <Rocket className="h-3.5 w-3.5" />
               {t.navDeploy}
             </button>
+            <a
+              href="/resume-to-website-guides.html"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+            >
+              {language === 'en' ? 'Guides' : '行业指南'}
+            </a>
           </nav>
         </div>
 
